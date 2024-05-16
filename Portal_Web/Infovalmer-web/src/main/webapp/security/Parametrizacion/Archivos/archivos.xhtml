@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Parametrización de archivos</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formGeneral">
+				<p:commandButton value="Nueva Parametrización"
+					onclick="PF('dlgGuardar').show();"
+					update=":formGuardar:panelParametria"
+					actionListener="#{parametrizacionController.limpiarCampos('parametrizacionController')}">
+				</p:commandButton>
+				<br />
+				<p:dataTable id="tableParametria"
+					value="#{parametrizacionController.listParametriaArchivo}"
+					var="parametria" resizeMode="expand" liveResize="true"
+					reflow="true" rows="10" paginator="true"
+					rowsPerPageTemplate="5,10" rowHover="true"
+					emptyMessage="#{msg['CREACION_PARAMETRIA_E1']}">
+
+					<p:column headerText="Mercado/Producto"
+						filterBy="#{parametria.nombreProducto}"
+						sortBy="#{parametria.nombreProducto}">
+						<h:outputText value="#{parametria.nombreProducto}" />
+					</p:column>
+
+					<p:column headerText="Ruta" filterBy="#{parametria.ruta}"
+						sortBy="#{parametria.ruta}">
+						<h:outputText value="#{parametria.ruta}" />
+					</p:column>
+
+					<p:column headerText="Modificar">
+						<div align="center">
+							<p:commandButton icon="ui-icon-pencil" id="btnModificar"
+								actionListener="#{parametrizacionController.setParametriaArchivoDto(parametria)}"
+								action="#{parametrizacionController.modificarFormRuta()}"
+								update=":formModificar:panelParametriaMod:"
+								onclick="PF('dlgModificar').show();">
+							</p:commandButton>
+						</div>
+					</p:column>
+
+					<p:column headerText="Ver detalle">
+						<div align="center">
+							<p:commandLink onclick="PF('dlgDetalle').show();"
+								update=":formDetalle:tableParametriaDetalle:"
+								actionListener="#{parametrizacionController.consultarListaFiltros(parametria)}">
+								<h:graphicImage value="/resources/img/atender.png"
+									title="Descargar archivo CSV" styleClass="tamanoImagen" />
+							</p:commandLink>
+						</div>
+					</p:column>
+				</p:dataTable>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+			</h:form>
+
+			<h:form id="formGuardar">
+				<p:dialog header="Crear Parametrización" widgetVar="dlgGuardar"
+					modal="true" responsive="true" id="dlgGuardarParam"
+					resizable="flase" draggable="true" closable="true">
+					<p:fieldset legend="Información General">
+						<p:messages layout="table" closable="true" autoUpdate="true" />
+						<p:panelGrid columns="2" id="panelParametria" layout="grid">
+							<p:outputLabel for="nombreProducto" value="Nombre Producto:"></p:outputLabel>
+							<p:inputText id="nombreProducto" placeholder="Nombre producto"
+								value="#{parametrizacionController.parametriaArchivoDto.nombreProducto}"
+								required="true" maxlength="100"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CAMPO_PRODUCTO']}"></p:inputText>
+
+							<p:outputLabel for="ruta" value="Ruta:"></p:outputLabel>
+							<p:inputText id="ruta" placeholder="Ruta archivo"
+								value="#{parametrizacionController.parametriaArchivoDto.ruta}"
+								required="true" maxlength="250"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CAMPO_RUTA']}"
+								validatorMessage="#{msg['CREACION_PARAMETRIA_VALIDACION_RUTA']}">
+								<f:validateRegex
+									pattern="^(?:[\w]\:|\/)(\/[a-z_\-\s0-9\.]+)+\/\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$"></f:validateRegex>
+							</p:inputText>
+
+							<p:outputLabel for="descripcion" value="Descripción"></p:outputLabel>
+							<p:inputText id="descripcion" placeholder="Descripción"
+								value="#{parametrizacionController.parametriaArchivoDto.descripcion}"
+								required="true" maxlength="300"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CAMPO_DESCRIPCION']}"></p:inputText>
+
+							<p:outputLabel for="prefijo" value="Prefijo"></p:outputLabel>
+							<p:inputText id="prefijo" placeholder="Prefijo"
+								value="#{parametrizacionController.parametriaArchivoDto.prefijo}"
+								required="true" maxlength="5"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CAMPO_PREFIJO']}"></p:inputText>
+
+							<p:outputLabel for="agrupador" value="Agrupador:"></p:outputLabel>
+							<p:selectOneMenu id="agrupador"
+								value="#{parametrizacionController.parametriaArchivoDto.agrupador.IAgrupador}"
+								required="false" requiredMessage="#{msg['CAMPO_AGRUPADOR']}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{parametrizacionController.listItemAgrupador}"></f:selectItems>
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+						<br />
+						<div align="center">
+							<p:commandButton id="btnGuardar" value="Guardar" process="@form"
+								update=":formGuardar:panelParametria :formGeneral"
+								actionListener="#{parametrizacionController.crearParametria}"></p:commandButton>
+							<p:commandButton value="Cancelar" process="@this"
+								onclick="PF('dlgInsumos').hide();eliminarFondoDialog();"></p:commandButton>
+						</div>
+					</p:fieldset>
+
+				</p:dialog>
+
+			</h:form>
+
+			<h:form id="formModificar">
+				<p:dialog header="Modificar Parametrización"
+					widgetVar="dlgModificar" modal="true" responsive="true"
+					id="dlgModificarParam" resizable="flase" draggable="true"
+					closable="false">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<p:panelGrid columns="2" id="panelParametriaMod" layout="grid">
+
+						<p:outputLabel value="Mercado:"
+							rendered="#{parametrizacionController.bolModificarRuta}"></p:outputLabel>
+						<p:outputLabel
+							value="#{parametrizacionController.parametriaArchivoDto.nombreProducto}"
+							rendered="#{parametrizacionController.bolModificarRuta}"></p:outputLabel>
+
+						<p:outputLabel for="ruta" value="Ruta:"
+							rendered="#{parametrizacionController.bolModificarRuta}"></p:outputLabel>
+						<p:inputText id="ruta" placeholder="Ruta archivo"
+							rendered="#{parametrizacionController.bolModificarRuta}"
+							value="#{parametrizacionController.parametriaArchivoDto.ruta}"
+							required="true" maxlength="250"
+							onkeypress="campoAlfaNumerico(this);"
+							onkeydown="campoAlfaNumerico(this);"
+							onkeyup="campoAlfaNumerico(this);"
+							requiredMessage="#{msg['CAMPO_RUTA']}"
+							validatorMessage="#{msg['CREACION_PARAMETRIA_VALIDACION_RUTA']}">
+							<f:validateRegex
+								pattern="^(?:[\w]\:|\/)(\/[a-z_\-\s0-9\.]+)+\/\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$"></f:validateRegex>
+						</p:inputText>
+
+						<p:outputLabel for="descripcion" value="Descripción"
+							rendered="#{parametrizacionController.bolModificarDetalle}"></p:outputLabel>
+						<p:inputText id="descripcion" placeholder="Descripción"
+							rendered="#{parametrizacionController.bolModificarDetalle}"
+							value="#{parametrizacionController.parametriaArchivoDto.descripcion}"
+							required="true" maxlength="300"
+							onkeypress="campoAlfaNumerico(this);"
+							onkeydown="campoAlfaNumerico(this);"
+							onkeyup="campoAlfaNumerico(this);"
+							requiredMessage="#{msg['CAMPO_DESCRIPCION']}"></p:inputText>
+
+						<p:outputLabel for="prefijo" value="Prefijo"
+							rendered="#{parametrizacionController.bolModificarDetalle}"></p:outputLabel>
+						<p:inputText id="prefijo" placeholder="Prefijo"
+							rendered="#{parametrizacionController.bolModificarDetalle}"
+							value="#{parametrizacionController.parametriaArchivoDto.prefijo}"
+							required="true" maxlength="5"
+							onkeypress="campoAlfaNumerico(this);"
+							onkeydown="campoAlfaNumerico(this);"
+							onkeyup="campoAlfaNumerico(this);"
+							requiredMessage="#{msg['CAMPO_PREFIJO']}"></p:inputText>
+
+						<p:outputLabel for="agrupador" value="Agrupador:"
+							rendered="#{parametrizacionController.bolModificarDetalle}"></p:outputLabel>
+						<p:selectOneMenu id="agrupador"
+							rendered="#{parametrizacionController.bolModificarDetalle}"
+							value="#{parametrizacionController.parametriaArchivoDto.agrupador.IAgrupador}"
+							required="false" requiredMessage="#{msg['CAMPO_AGRUPADOR']}">
+							<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+							<f:selectItems
+								value="#{parametrizacionController.listItemAgrupador}"></f:selectItems>
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<br />
+					<p:commandButton value="Guardar"
+						actionListener="#{parametrizacionController.modificarParametria()}"
+						update=":formGeneral :formDetalle:tableParametriaDetalle"
+						process="@form"></p:commandButton>
+					<p:commandButton value="Regresar" ajax="false"
+						update=":formModificar:panelParametriaMod"
+						onclick="PF('dlgModificar').hide(); eliminarFondoDialog(); "></p:commandButton>
+				</p:dialog>
+			</h:form>
+
+			<h:form id="formDetalle">
+				<p:dialog header="Detalle Derivados OTC" widgetVar="dlgDetalle"
+					modal="true" responsive="true" id="dlgDetalle" resizable="flase"
+					draggable="true" closable="false" onHide="eliminarFondoDialog();">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<p:dataTable id="tableParametriaDetalle"
+						value="#{parametrizacionController.listParametriaArchivoDetalle}"
+						var="parametria" paginator="true" rows="20"
+						emptyMessage="#{msg['CREACION_PARAMETRIA_E1']}">
+
+						<p:column filterBy="#{parametria.descripcion}"
+							filterMatchMode="contains" headerText="Descripción">
+							<h:outputText value="#{parametria.descripcion}" />
+						</p:column>
+
+						<p:column filterBy="#{parametria.prefijo}"
+							filterMatchMode="contains" headerText="Prefijo">
+							<h:outputText value="#{parametria.prefijo}" />
+						</p:column>
+						<p:column filterBy="#{parametria.agrupador.cNombre}"
+							filterMatchMode="contains" headerText="Agrupador">
+							<h:outputText value="#{parametria.agrupador.cNombre}" />
+						</p:column>
+						<p:column headerText="Modificar">
+							<p:commandButton icon="ui-icon-pencil" id="btnModificar"
+								actionListener="#{parametrizacionController.setParametriaArchivoDto(parametria)}"
+								action="#{parametrizacionController.modificarFormDetalle()}"
+								update=":formModificar:panelParametriaMod:"
+								onclick="PF('dlgModificar').show();">
+							</p:commandButton>
+						</p:column>
+						<p:column headerText="Eliminar">
+							<p:commandButton icon="ui-icon-trash" id="btnEliminar"
+								actionListener="#{parametrizacionController.eliminarParametria(parametria)}"
+								update=":formGeneral, :formDetalle:tableParametriaDetalle"
+								process="@all" immediate="true">
+								<p:confirm header="Mensaje de confirmación"
+									message="¿Desea eliminar el detalle de la parametrización?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+					<div align="center">
+						<p:commandButton value="Regresar" ajax="false"
+							onclick="PF('dlgDetalle').hide(); eliminarFondoDialog(); "></p:commandButton>
+					</div>
+				</p:dialog>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+					closable="true">
+					<p:commandButton value="Si" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="NO" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

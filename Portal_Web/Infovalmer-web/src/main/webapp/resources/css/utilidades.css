@@ -1,0 +1,207 @@
+@CHARSET "UTF-8";
+
+.styleRequiered {
+	color: #b94a48 !important;
+	font-weight: bold !important;
+}
+
+.ui-dialog {
+	width: 60% !important;
+}
+
+.ui-confirm-dialog {
+	width: 50% !important
+}
+
+.ui-widget-overlay {
+	background: #C7D2C9;
+	opacity: 0.2 !important;
+}
+
+.ui-autocomplete {
+	width: 100% !important;
+}
+
+.ui-picklist-button-add-all {
+	display: none !important;
+}
+
+.btn-param {
+	padding: 20px 35px !important;
+	background-color: #ED5A5A !important;
+	text-transform: uppercase !important;
+	color: #fff !important;
+	border: 0 !important;
+	font-size: 14px !important;
+	font-weight: 400 !important;
+	-webkit-transition: all 0.3s !important;
+	transition: all 0.3s !important;
+	border-radius: 5px !important;
+	cursor: pointer !important;
+}
+
+body.loading {
+	overflow: hidden;
+}
+
+body.loading .backLoading {
+	display: block;
+}
+
+body.loading .imgLoading {
+	display: block;
+}
+
+.imgLoading {
+	position: absolute;
+	display: none;
+	background: url(../resources/img/loader.gif) no-repeat;
+	z-index: 1051;
+	height: 80px;
+	width: 80px;
+}
+
+.backLoading {
+	background-color: #DCDCDC;
+	display: none;
+	position: fixed;
+	z-index: 2003;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	opacity: .3;
+	filter: Alpha(Opacity = 30);
+}
+
+.tamanoImagen {
+	width: 25px !important;
+	height: 25px !important;
+}
+
+.ui-icon-descargar {
+	background-image: url("#{resource['img/descargar.png']}") !important;
+}
+
+.ui-widget-header {
+	border: white !important;
+	background: none !important;
+}
+
+.ui-widget-content {
+	background: none !important;
+	background-color: white !important;
+}
+
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited
+	{
+	color: #666 !important;
+	background-color: #ccc !important;
+}
+
+.ui-state-hover a, .ui-state-hover a:hover {
+	color: white !important;
+	background-color: #ffa31f !important;
+}
+
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited
+	{
+	color: white !important;
+	background-color: #ffa31f !important;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default,
+	.ui-widget-header .ui-state-default {
+	color: #666 !important;
+}
+
+#formularioGeneral\:insumo_panel {
+	top: 0 !important;
+}
+
+#formHistoricoTasas\:tasas_panel {
+	top: 0 !important;
+}
+
+#formHistoricoMonedas\:monedas_panel {
+	top: 0 !important;
+}
+
+#formHistoricoPuntos\:selectCurvas_panel {
+	top: 0 !important;
+}
+
+#formHistoricoIndices\:indices_panel {
+	top: 0 !important;
+}
+
+.imagenEliminar {
+	background-image: url(/resources/img/descargar.png)
+}
+
+#formGuardar\:dlgGuardarImpug {
+	top: 20px !important;
+}
+
+#formModificar\:dlgModificarParam {
+	top:50px !important;
+}
+
+#formDetalle\:dlgDetalle {
+	top: 20px !important;
+}
+
+.ui-column-title, .ui-datatable-data {
+	font-size: 13px !important;
+}
+
+.ui-selectonemenu-label, .ui-outputlabel, .ui-inputfield {
+	font-size: 15px !important;
+}
+
+#formTablasAmorti\:panelDescargarArchivo,
+	#formHistoricoAcciones\:gridDescarga, #formDerivados\:gridDescarga {
+	background: #f6a828;
+}
+
+.ui-outputlabel {
+	font-size: 13px !important;
+}
+
+.ui-picklist-item {
+	font-size: 13px !important;
+}
+
+.ui-button-text {
+	font-size: 15px !important;
+}
+
+.ui-selectonemenu-item {
+	font-size: 15px !important;
+}
+
+.ui-calendar {
+	font-size: 13px !important;
+}
+
+.ui-treenode-label {
+	font-size: 13px !important;
+}
+
+.ui-datepicker-calendar {
+	font-size: 13px !important;
+}
+
+.ui-datepicker-month, .ui-datepicker-year {
+	font-size: 15px !important;
+}
+
+.ui-column-filter {
+	width: 90% !important;
+}
+
+#formTablasAmorti\:panelDescargarArchivo,
+	#formHistoricoAcciones\:gridDescarga, #formDerivados\:gridDescarga {
+	font-size: 13px !important;
+}
+

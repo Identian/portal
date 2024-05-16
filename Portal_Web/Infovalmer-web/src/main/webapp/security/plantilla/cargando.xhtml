@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<div class="backLoading" />
+	<div class="imgLoading" />
+	<p:idleMonitor timeout="#{session.maxInactiveInterval * 1000}"
+		onidle="location.reload();">
+	</p:idleMonitor>
+	<p:ajaxStatus onstart="showLoading()" onsuccess="hideLoading()"
+		onerror="hideLoading()"
+		oncomplete="aiExecuteWorkaround_advanced_iframe();" />
+	<!-- 		<p:ajaxStatus onstart="showLoading()" onsuccess="hideLoading()" -->
+	<!-- 			onerror="hideLoading()" /> -->
+	<br />
+</h:body>
+</html>
+

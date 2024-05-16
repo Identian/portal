@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Respuesta impugnaciones</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formGeneralRespuestaImpugnacion">
+				<p:dataTable var="respuesta"
+					value="#{respuestaImpugnacionController.listaImpugnacionesSinAtender}"
+					id="dtImpugnaciones" resizeMode="expand" liveResize="true"
+					reflow="true" rows="10" paginator="true"
+					rowsPerPageTemplate="5,10" rowHover="true"
+					emptyMessage="No se encontraron impugnaciones">
+
+					<p:column headerText="Consecutivo" sortBy="#{respuesta.iConsec}"
+						filterBy="#{respuesta.iConsec}" filterMatchMode="contains">
+						<h:outputText value="#{respuesta.iConsec}" />
+					</p:column>
+
+					<p:column headerText="Producto" sortBy="#{respuesta.c_mercado}"
+						filterBy="#{respuesta.c_mercado}" filterMatchMode="contains">
+						<h:outputText value="#{respuesta.c_mercado}" />
+					</p:column>
+
+					<p:column headerText="Estado"
+						sortBy="#{respuesta.iEstado == 2 ? 'Pendiente' : 'Atendida'}"
+						filterBy="#{respuesta.iEstado == 2 ? 'Pendiente' : 'Atendida'}"
+						filterMatchMode="contains">
+						<h:outputText
+							value="#{respuesta.iEstado == 2 ? 'Pendiente' : 'Atendida' }" />
+					</p:column>
+
+					<p:column headerText="Acción">
+						<div align="center">
+							<p:commandLink value="Atender"
+								actionListener="#{respuestaImpugnacionController.atender(respuesta)}"
+								update=":formGuardar:panelRespuestaImpugnacion"
+								onclick="PF('dlgGuardar').show();">
+							</p:commandLink>
+						</div>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+			<h:form id="formGuardar">
+				<p:dialog header="Respuesta Impugnacion" widgetVar="dlgGuardar"
+					modal="true" responsive="true" id="dlgGuardarImpug"
+					style="top:5px !important" resizable="flase" draggable="true"
+					closable="true">
+					<div class="ui-fluid">
+						<h:panelGrid columns="2" id="panelRespuestaImpugnacion"
+							layout="grid">
+
+							<p:outputLabel for="consecutivo" value="Consecutivo"></p:outputLabel>
+							<p:inputText id="consecutivo" disabled="true"
+								value="#{respuestaImpugnacionController.consecutivo}" />
+
+							<p:outputLabel for="razonImpugn" value="Razón de Impugnación"></p:outputLabel>
+							<p:inputTextarea id="razonImpugn" disabled="true"
+								value="#{respuestaImpugnacionController.impugnCurrent.CDescripcion}">
+							</p:inputTextarea>
+
+							<p:outputLabel for="destinatario" value="Destinatario"></p:outputLabel>
+							<p:inputText id="destinatario" disabled="true"
+								value="#{respuestaImpugnacionController.impugnCurrent.CCorreo}" />
+
+							<p:outputLabel for="desc" value="Descripción"></p:outputLabel>
+							<p:editor id="desc" widgetVar="editorWidget"
+								value="#{respuestaImpugnacionController.impugnCurrent.CRespuesta}"
+								width="600"
+								requiredMessage="#{respuestaImpugnacionController.impugnCurrent.CRespuesta}"
+								required="true" />
+
+
+							<p:growl id="msg" />
+
+							<p:fileUpload id="uploadImg" label="Seleccionar Archivo"
+								cancelLabel="Cancelar" uploadLabel="Cargar archivos"
+								fileUploadListener="#{respuestaImpugnacionController.upload}"
+								value="Cargar Imagen"
+								allowTypes="/(\.|\/)(gif|jpe?g|png|xls?x|pdf|doc?x)$/"
+								sizeLimit="10000000" update="msg">
+							</p:fileUpload>
+						</h:panelGrid>
+						<p:spacer height="30" />
+					</div>
+					<div align="center">
+						<p:commandButton id="btnGuardar" value="Guardar" process="@form"
+							update=":formGeneralRespuestaImpugnacion, msg"
+							oncomplete="PF('dlgGuardar').hide();"
+							actionListener="#{respuestaImpugnacionController.registrarRespuestaImpugnacion}" />
+						<p:commandButton id="btnCancelar" value="Cancelar" process="@form"
+							immediate="true" onclick="PF('dlgGuardar').hide();"
+							update=":formGuardar"
+							actionListener="#{respuestaImpugnacionController.cancelar}" />
+					</div>
+				</p:dialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

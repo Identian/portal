@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UT" />
+	<title>Impugnación Renta Variable Local</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formRentaVariLocal"
+				rendered="#{impugnacionGeneralController.flagPagina}">
+				<f:metadata>
+					<f:viewParam name="horaImp"
+						value="#{impugnacionGeneralController.horaImpugnacion}" />
+					<f:event listener="#{impugnacionGeneralController.validarTiempo()}"
+						type="preRenderComponent"></f:event>
+					<f:event
+						listener="#{impugnacionGeneralController.setIdFormExecuteScript('formRentaVariLocal')}"
+						type="preRenderComponent"></f:event>
+				</f:metadata>
+				<p:fieldset legend="Impugnación Renta Variable Local">
+					<div align="center">
+						<p:panelGrid id="principalGrid" columns="2">
+							<p:outputLabel value="Tiempo restante para impugnación:"
+								for="labelRestante"/>
+							<p:outputLabel id="labelRestante" value=""/>
+							<p:outputLabel for="labeLimite"
+								value="Hora límite para impugnar:" />
+							<p:outputLabel id="labeLimite"
+								value="#{impugnacionGeneralController.horaImpugnacion}" />
+						</p:panelGrid>
+					</div>
+
+					<p:spacer height="15" />
+					<div id="mensajeJavaScript"></div>
+					<p:messages id="messages" showDetail="false" autoUpdate="true"
+						closable="true" redisplay="false" />
+					<div class="ui-fluid">
+						<p:panelGrid id="gridNemos" columns="2" layout="grid">
+							<p:outputLabel value="Nemotécnicos: " for="comboNemotecnicos" />
+							<p:autoComplete id="comboNemotecnicos" forceSelection="true"
+								minQueryLength="#{impugnacionGeneralController.consultaMinimoCaracteres()}"
+								value="#{impugnacionGeneralController.nemotecnico}"
+								maxResults="#{impugnacionGeneralController.consultaMaximoResultados()}"
+								completeMethod="#{impugnacionGeneralController.autoCompletarNemotecnicoEspe}"
+								required="true" requiredMessage="#{msg['CAMPO_NEMOTECNICOS']}"
+								effect="fade" scrollHeight="300" />
+
+							<p:outputLabel value="Email : " for="email1" />
+							<p:inputText id="email1"
+								value="#{impugnacionGeneralController.impugnacionCurrent.CCorreo}">
+								<f:validator validatorId="custom.emailValidator" />
+							</p:inputText>
+
+							<p:outputLabel value="Descripción: " for="textDescripcion" />
+							<p:inputTextarea id="textDescripcion"
+								value="#{impugnacionGeneralController.impugnacionCurrent.CDescripcion}"
+								required="true"
+								requiredMessage="Debe diligenciar el campo descripcion" />
+
+							<p:outputLabel value="Teléfono: " for="textTelefono" />
+							<p:inputMask id="textTelefono"
+								value="#{impugnacionGeneralController.impugnacionCurrent.CTelefono}"
+								mask="99?9999?9999" required="true" maxlength="10"
+								requiredMessage="#{msg['CAMPO_TELEFONO']}">
+							</p:inputMask>
+						</p:panelGrid>
+					</div>
+					<br />
+					<div align="center">
+						<p:commandButton value="Guardar" id="btnGuardar"
+							disabled="#{impugnacionGeneralController.flagBotonImpugnar}"
+							action="#{impugnacionGeneralController.impRentaVariableLocal()}"
+							update=":formRentaVariLocal" process="@form" />
+						<p:commandButton id="btnCancelar" value="Cancelar" process="@this"
+							actionListener="#{impugnacionGeneralController.cancelar()}"
+							oncomplete="limpiarForm('formRentaVariLocal')" resetValues="true"
+							update=":formRentaVariLocal" />
+					</div>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+	<script type="text/javascript">
+	    /**
+	     * Faces Validator
+	     */
+	    PrimeFaces.validator['custom.emailValidator'] = {
+	 
+	        pattern: /\S+@\S+/,
+	 
+	        validate: function(element, value) {
+	            //use element.data() to access validation metadata, in this case there is none.
+	            if(!this.pattern.test(value)) {
+	                throw {
+	                    summary: 'Error de validacion',
+	                    detail: value + ' no es email valido.'
+	                }
+	            }
+	        }
+	    };
+	    
+	    
+    </script>
+</h:body>
+</html>

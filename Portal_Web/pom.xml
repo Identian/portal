@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>Infovalmer-root</groupId>
+	<artifactId>Infovalmer-root</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Infovalmer-root</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- VERSION JAVA -->
+		<java.version>11</java.version>
+		
+		<!-- VERSION COMPILER SOURCE Y TARGET -->
+		<maven.compiler.source>11</maven.compiler.source>
+     	<maven.compiler.target>11</maven.compiler.target>
+
+		<!-- VERSION JARS LOG -->
+		<slf4j.version>1.7.21</slf4j.version>
+		<logback.version>1.0.7</logback.version>
+		<log4j.version>2.1</log4j.version>
+
+		<!-- VERSION PRIMEFACES -->
+		<primefaces.version>6.2</primefaces.version>
+		<primeFacesTheme.version>1.0.10</primeFacesTheme.version>
+
+		<!-- VERSION JSF -->
+		<jsf.version>2.1.11</jsf.version>
+		<!--<jsf.version>2.2.1</jsf.version>-->
+
+		<!-- VERSION WEB API -->
+		<javaee.version>8.0</javaee.version>
+
+		<!-- VERSION eclipselink -->
+		<eclipselink.version>2.5.0</eclipselink.version>
+
+		<!-- VERSION DRIVER MYSQL -->
+		<mysql.version>8.0.28</mysql.version>
+		<!--<mysql.version>5.1.6</mysql.version>-->
+
+		<!-- VERSION COMMONS NET -->
+		<version-commons-net>3.5</version-commons-net>
+
+		<!-- VERSION GSON -->
+		<version-gson>2.8.0</version-gson>
+
+		<!-- VERSION NET BOOTSFACES -->
+		<version-net-bootsfaces>1.0.1</version-net-bootsfaces>
+
+		<!-- VERSION TEMAS PRIMEFACES -->
+		<version-theme-pf>1.0.10</version-theme-pf>
+
+		<!-- APACHE COMMONS -->
+		<apache-commons-version>1.3.1</apache-commons-version>
+
+		<apache-code-version>1.2</apache-code-version>
+		
+		<version-spring-framework-jdbc>4.1.6.RELEASE</version-spring-framework-jdbc>
+		
+		<version-junit>4.4</version-junit>
+	</properties>
+	
+	<!-- Repositorio de PrimeFaces
+	<repositories>
+	    <repository>
+	        <id>prime-repo</id>
+	        <name>PrimeFaces Maven Repository</name>
+	        <url>http://repository.primefaces.org</url>
+	        <layout>default</layout>
+	    </repository>
+	</repositories>
+	 -->
+	 
+	<modules>
+		<module>Infovalmer-dto</module>
+		<module>Infovalmer-model</module>
+		<module>Infovalmer-jpa</module>
+		<module>Infovalmer-ejb</module>
+		<module>Infovalmer-web</module>
+		<module>Infovalmer-log</module>
+		<module>Infovalmer-ear</module>
+	</modules>
+</project>

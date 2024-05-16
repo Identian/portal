@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Asignación de archivos a perfiles</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<!-- 			<h:form id="form"> -->
+			<p:fieldset>
+				<div class="ui-fluid">
+					<h:form id="form_1">
+						<p:messages autoUpdate="true" closable="true" />
+						<p:selectOneMenu required="true"
+							value="#{tipoCurvaController.i_perfil}">
+							<p:ajax event="change"
+								listener="#{tipoCurvaController.consultatipoCurvaPerfil()}"
+								update="form_2"></p:ajax>
+							<f:selectItems value="#{tipoCurvaController.perfilesList}" />
+						</p:selectOneMenu>
+					</h:form>
+					<br /> <br />
+					<h:form id="form_2">
+						<p:tree value="#{tipoCurvaController.root}" var="Arbol"
+							selectionMode="checkbox"
+							onNodeClick="aiExecuteWorkaround_advanced_iframe();"
+							selection="#{tipoCurvaController.nodosSeleccionados}" id="Arbol">
+							<p:treeNode type="Agrupador">
+								<h:outputText value="#{Arbol.cNombre}" />
+							</p:treeNode>
+							<p:treeNode type="tipoCurva">
+								<h:outputText value="#{Arbol.cNombre}" />
+							</p:treeNode>
+						</p:tree>
+						<!-- 					</div> -->
+						<br />
+						<div align="center">
+							<p:commandButton value="Guardar"
+								action="#{tipoCurvaController.insertartipoCurvaPerfil(tipoCurvaController.nodosSeleccionados)}"
+								update="form_2:Arbol"></p:commandButton>
+							<p:commandButton value="Cancelar" process="@this"></p:commandButton>
+						</div>
+					</h:form>
+				</div>
+			</p:fieldset>
+			<!-- 			</h:form> -->
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

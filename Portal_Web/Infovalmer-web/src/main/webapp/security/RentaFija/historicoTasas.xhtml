@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Historico de Tasas</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formHistoricoTasas">
+				<p:fieldset legend="Históricos por tasas">
+					<p:outputLabel
+						value="Necesario para mostrar el message cuando se redirecciona desde pagina de Indicadores"
+						rendered="#{historicoTasasController.viewMessage}"></p:outputLabel>
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<p:panelGrid columns="2" layout="grid" id="panelSelectTipo">
+						<p:outputLabel for="tasas" value="Tasas:" />
+						<p:selectOneMenu id="tasas" filter="true" style="width:90%"
+							filterMatchMode="contains" required="true"
+							requiredMessage="#{msg['SELECT_MENSAJE_GENERAL']}"
+							value="#{historicoTasasController.tasasVistaDto.tipoTasa}">
+							<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+							<f:selectItems value="#{historicoTasasController.listaTipoTasa}"
+								var="tipoTasa" itemLabel="#{tipoTasa.cTipotasa}"
+								itemValue="#{tipoTasa.cTipotasa}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="fechaIni" value="Fecha Inicial:" />
+						<p:calendar id="fechaIni" showOn="button"
+							value="#{historicoTasasController.tasasVistaDto.fechaInicial}"
+							mindate="#{historicoTasasController.minimoFechaInicial}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							requiredMessage="#{msg['FECHA_INICIAL_E1']}">
+							<p:ajax event="dateSelect" update="fechaFin" process="@this"
+								ignoreAutoUpdate="true" />
+						</p:calendar>
+						<p:outputLabel for="fechaFin" value="Fecha Final:" />
+						<p:calendar id="fechaFin" showOn="button"
+							value="#{historicoTasasController.tasasVistaDto.fechaFinal}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							mindate="#{historicoTasasController.tasasVistaDto.fechaInicial}"
+							requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+					</p:panelGrid>
+					<br />
+					<center>
+						<p:commandButton value="Buscar" process="@form"
+							actionListener="#{historicoTasasController.consultarHistoricoTasas()}"
+							update=":formHistoricoTasas"></p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							actionListener="#{historicoTasasController.limpiarCampos('historicoTasasController')}"
+							update=":formHistoricoTasas">
+						</p:commandButton>
+					</center>
+				</p:fieldset>
+				<br />
+				<p:fieldset rendered="#{historicoTasasController.viewGrafica}">
+					<p:chart type="line" widgetVar="graficaTasas"
+						model="#{historicoTasasController.graficaHistoricoTasas}"
+						responsive="true" />
+
+					<br />
+					<p:panelGrid style="width:100%">
+						<p:row>
+							<p:column style="width:50%">
+								<center>
+									<p:commandButton type="button"
+										value="#{msg['RESTABLECER_GRAFICA_NOMBRE']}"
+										icon="ui-icon-cancel" onclick="PF('graficaTasas').resetZoom()" />
+								</center>
+							</p:column>
+							<p:column style="width:50%">
+								<center>
+									<h:commandLink
+										rendered="#{historicoTasasController.viewGrafica}"
+										actionListener="#{historicoTasasController.descargarCsv()}">
+										<h:graphicImage value="/resources/img/descargar.png"
+											title="Descargar archivo CSV" styleClass="tamanoImagen" />
+									</h:commandLink>
+
+								</center>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

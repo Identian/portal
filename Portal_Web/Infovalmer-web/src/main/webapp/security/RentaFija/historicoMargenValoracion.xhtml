@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Histórico por margen de valoración</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formularioGeneral">
+
+				<p:fieldset legend="Histórico margen">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<br />
+					<p:panelGrid columns="2" id="panelTipo" layout="grid">
+						<p:outputLabel for="tipo" />
+						<p:selectOneRadio id="tipo"
+							value="#{hMargenValoracionController.tipo}">
+							<p:ajax listener="#{hMargenValoracionController.enabledView()}"
+								update=":formularioGeneral" process="@this"
+								oncomplete="aiExecuteWorkaround_advanced_iframe();"
+								onerror="aiExecuteWorkaround_advanced_iframe();"
+								onsuccess="aiExecuteWorkaround_advanced_iframe();"></p:ajax>
+							<f:selectItem itemLabel="Nemotécnico" itemValue="0" />
+							<f:selectItem itemLabel="Categoria" itemValue="1" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+					<br />
+					<div class="ui-fluid">
+						<p:panelGrid
+							rendered="#{hMargenValoracionController.viewPanelNemo}"
+							columns="2" id="panelFormNemo" layout="grid">
+
+							<p:outputLabel for="nemot" value="Nemotécnico:"></p:outputLabel>
+							<p:autoComplete id="nemot"
+								minQueryLength="#{hMargenValoracionController.consultaMinimoCaracteres()}"
+								forceSelection="true"
+								maxResults="#{hMargenValoracionController.consultaMaximoResultados()}"
+								value="#{hMargenValoracionController.categoria.CNemotecnico}"
+								completeMethod="#{hMargenValoracionController.autocompletarNemo}"
+								effect="fade" scrollHeight="300">
+							</p:autoComplete>
+
+							<p:outputLabel for="rangov" value="Rango Vencimiento:"></p:outputLabel>
+							<p:selectOneMenu id="rangov" filter="true" height="100"
+								requiredMessage="#{msg['MARGEN_VALORACION_E4']}"
+								filterMatchMode="contains" required="true"
+								value="#{hMargenValoracionController.categoria.IRangovencimiento}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{hMargenValoracionController.listRangoVencimiento}"
+									var="rangov" itemLabel="#{rangov.CNombre}"
+									itemValue="#{rangov.IRangvencimi}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="fechaIni" value="Fecha Inicial: "></p:outputLabel>
+							<p:calendar id="fechaIni"
+								mindate="#{hMargenValoracionController.minimoFechaInicial}"
+								value="#{hMargenValoracionController.categoria.DFechainicio}"
+								pattern="yyyy-MM-dd" navigator="true" locale="es"
+								required="true" requiredMessage="#{msg['FECHA_INICIAL_E1']}"
+								 />
+
+							<p:outputLabel for="fechaFin" value="Fecha Final:" />
+							<p:calendar id="fechaFin"
+								mindate="#{hMargenValoracionController.minimoFechaInicial}"
+								value="#{hMargenValoracionController.categoria.DFechafin}"
+								pattern="yyyy-MM-dd" locale="es" navigator="true"
+								required="true" requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+
+						</p:panelGrid>
+
+						<p:panelGrid
+							rendered="#{hMargenValoracionController.viewPanelCateg}"
+							columns="2" id="panelFormCateg" layout="grid">
+
+							<p:outputLabel for="clase" value="Clase:"></p:outputLabel>
+							<p:selectOneMenu id="clase" filter="true"
+								requiredMessage="#{msg['MARGEN_VALORACION_E5']}"
+								filterMatchMode="contains" required="true"
+								value="#{hMargenValoracionController.categoria.CClase}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems value="#{hMargenValoracionController.listClase}"
+									var="clase" itemLabel="#{clase.CNombre}"
+									itemValue="#{clase.CClase}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="rangoVencimiento2"
+								value="Rango días de vencimiento:"></p:outputLabel>
+							<p:selectOneMenu id="rangoVencimiento2" filter="true"
+								requiredMessage="#{msg['MARGEN_VALORACION_E4']}"
+								filterMatchMode="contains" required="true"
+								value="#{hMargenValoracionController.categoria.IRangovencimiento}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{hMargenValoracionController.listRangoVencimiento}"
+									var="rangoVenc" itemLabel="#{rangoVenc.CNombre}"
+									itemValue="#{rangoVenc.IRangvencimi}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="moneda" value="Moneda:"></p:outputLabel>
+							<p:selectOneMenu id="moneda" filter="true"
+								requiredMessage="#{msg['MARGEN_VALORACION_E6']}"
+								filterMatchMode="contains" required="true"
+								value="#{hMargenValoracionController.categoria.CMoneda}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems value="#{hMargenValoracionController.listMoneda}"
+									var="moneda" itemLabel="#{moneda.cNombre}"
+									itemValue="#{moneda.cTipomoneda}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="calificacion" value="Calificación:"></p:outputLabel>
+							<p:selectOneMenu id="calificacion" filter="true"
+								requiredMessage="#{msg['MARGEN_VALORACION_E7']}"
+								filterMatchMode="contains" required="true"
+								value="#{hMargenValoracionController.categoria.IGrupocalificador}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{hMargenValoracionController.listCalificacion}"
+									var="calif" itemLabel="#{calif.CNombre}"
+									itemValue="#{calif.IGrupcalifica}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="tasa" value="Tasa:"></p:outputLabel>
+							<p:selectOneMenu id="tasa" filter="true"
+								filterMatchMode="contains" required="true"
+								requiredMessage="#{msg['MARGEN_VALORACION_E8']}" value="#">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}"
+									itemValue="#{hMargenValoracionController.categoria.CTasa}"></f:selectItem>
+								<f:selectItems value="#{hMargenValoracionController.listTasa}"
+									var="tasa" itemLabel="#{tasa.cTipotasa}"
+									itemValue="#{tasa.cTipotasa}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="fechaIni2" value="Fecha Inicial: "></p:outputLabel>
+							<p:calendar id="fechaIni2"
+								value="#{hMargenValoracionController.categoria.DFechainicio}"
+								pattern="yyyy-MM-dd" navigator="true" locale="es"
+								required="true" requiredMessage="#{msg['FECHA_INICIAL_E1']}" />
+
+							<p:outputLabel for="fechaFin2" value="Fecha Final:" />
+							<p:calendar id="fechaFin2"
+								value="#{hMargenValoracionController.categoria.DFechafin}"
+								pattern="yyyy-MM-dd" locale="es" navigator="true"
+								required="true" requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+
+						</p:panelGrid>
+					</div>
+					<br />
+					<div align="center">
+						<p:commandButton id="btnBuscar" value="Buscar"
+							update=":formularioGeneral,fielGrafica"
+							actionListener="#{hMargenValoracionController.pintarGrafica()}"
+							process="@form"></p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							update=":formularioGeneral"
+							oncomplete="limpiarForm('formularioGeneral')" resetValues="true">
+						</p:commandButton>
+					</div>
+				</p:fieldset>
+
+				<br />
+				<p:fieldset id="fielGrafica"
+					rendered="#{hMargenValoracionController.viewGrafica}">
+					<p:chart type="line" model="#{hMargenValoracionController.grafica}"
+						responsive="true" widgetVar="graficaHistorico" />
+					<br />
+					<p:panelGrid style="width:100%">
+						<p:row>
+							<p:column style="width:50%">
+								<center>
+									<p:commandButton type="button"
+										value="#{msg['RESTABLECER_GRAFICA_NOMBRE']}"
+										icon="ui-icon-cancel"
+										onclick="PF('graficaHistorico').resetZoom()" />
+								</center>
+							</p:column>
+							<p:column style="width:50%">
+								<center>
+									<p:commandLink ajax="false"
+										actionListener="#{hMargenValoracionController.generarCsv}">
+										<h:graphicImage value="/resources/img/descargar.png"
+											title="Descargar archivo CSV" styleClass="tamanoImagen" />
+										<p:fileDownload value="#{hMargenValoracionController.file}" />
+									</p:commandLink>
+								</center>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:fieldset>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Tablas de Amortización</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formTablasAmorti">
+				<p:fieldset legend="Tablas de Amortización">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+
+					<p:panelGrid columns="2" layout="grid">
+						<p:outputLabel for="nemotecnico" value="Nemotécnicos:"></p:outputLabel>
+						<p:autoComplete id="nemotecnico" dropdown="true" required="true"
+							dropdownMode="current" scrollHeight="100" 
+							minQueryLength="#{tablasAmartizacionController.consultaMinimoCaracteres()}"
+							forceSelection="true"
+							value="#{tablasAmartizacionController.amortizacionVista.nemotecnico}"
+							completeMethod="#{tablasAmartizacionController.completeNemoTecnico}"
+							requiredMessage="#{msg['SELECT_MENSAJE_GENERAL']}" />
+						<p:outputLabel for="fechaFin" value="Fecha :" />
+						<p:calendar id="fechaFin"
+							value="#{tablasAmartizacionController.amortizacionVista.fechaFinal}"
+							showOn="button" pattern="yyyy-MM-dd" locale="es" navigator="true"
+							required="true" requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+					</p:panelGrid>
+
+					<br />
+					<center>
+						<p:commandButton id="btnBuscar" value="Buscar"
+							actionListener="#{tablasAmartizacionController.consultarTablaAmortizacion()}"
+							update=":formTablasAmorti" process="@form"></p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							update=":formTablasAmorti"
+							actionListener="#{tablasAmartizacionController.limpiarCampos('tablasAmartizacionController')}">
+						</p:commandButton>
+					</center>
+					<br/>
+				</p:fieldset>
+				<br />
+				<p:fieldset rendered="#{tablasAmartizacionController.vistaTabla}">
+					<p:panelGrid id="panelDescargarArchivo" style="width:100%">
+						<f:facet name="header">
+							<p:row >
+								<p:column>Fecha</p:column>
+								<p:column>Nemotecnico</p:column>
+								<p:column>Descargar</p:column>
+							</p:row>
+						</f:facet>
+						<p:row>
+							<p:column>
+								<center>#{tablasAmartizacionController.convertirFecha(tablasAmartizacionController.amortizacionVista.fechaFinal)}</center>
+							</p:column>
+							<p:column>
+								<center>#{tablasAmartizacionController.amortizacionVista.nemotecnico}</center>
+							</p:column>
+							<p:column>
+								<center>
+									<p:commandLink ajax="false">
+										<h:graphicImage value="/resources/img/descargar.png"
+											title="Descargar archivo plano" styleClass="tamanoImagen" />
+										<p:fileDownload value="#{tablasAmartizacionController.file}" />
+									</p:commandLink>
+								</center>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

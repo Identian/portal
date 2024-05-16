@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+	<application>
+		<locale-config>
+			<default-locale>de</default-locale>
+			<supported-locale>en_US</supported-locale>
+		</locale-config>
+		<resource-bundle>
+			<base-name>/Messages</base-name>
+			<var>msg</var>
+		</resource-bundle>
+    
+	</application>
+
+	<converter>
+		<converter-id>tipoTasaConverter</converter-id>
+		<converter-class>co.com.infovalmer.converter.TipoTasaConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>tipoMonedaConverter</converter-id>
+		<converter-class>co.com.infovalmer.converter.TipoMonedaConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>tituloConverter</converter-id>
+		<converter-class>co.com.infovalmer.converter.TituloConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>tipoCurvaConverter</converter-id>
+		<converter-class>co.com.infovalmer.converter.TipoCurvaConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>tipoCurvaConverterDualList</converter-id>
+		<converter-class>co.com.infovalmer.converter.TipoCurvaConverterDualList</converter-class>
+	</converter>
+
+
+</faces-config>
+
+

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Historico de monedas</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formHistoricoBetas">
+				<p:fieldset legend="Históricos Betas">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<p:panelGrid columns="2" layout="grid" id="panelSelectTipo">
+						<p:outputLabel value="Curvas: " for="curvas" />
+						<p:selectOneMenu id="curvas" filter="true" required="true"
+							filterMatchMode="contains" style="width:90%"
+							requiredMessage="#{msg['SELECT_MENSAJE_GENERAL']}"
+							value="#{HistoricoBetasController.curva}">
+							<f:selectItem itemLabel="#{msg['SELECT_OPCION']}"></f:selectItem>
+							<f:selectItems value="#{HistoricoBetasController.curvaCeroList}"
+								var="curvas" itemLabel="#{curvas.cNombre}"
+								itemValue="#{curvas.cCurcerocupon}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="fechaIni" value="Fecha Inicial:" />
+						<p:calendar id="fechaIni" showOn="button"
+							mindate="#{HistoricoBetasController.minimoFechaInicial}"
+							value="#{HistoricoBetasController.fechaini}" pattern="yyyy-MM-dd"
+							locale="es" navigator="true" required="true"
+							requiredMessage="#{msg['FECHA_INICIAL_E1']}">
+							<p:ajax event="dateSelect" update="fechaFin" process="@this" />
+						</p:calendar>
+						<p:outputLabel for="fechaFin" value="Fecha Final:" />
+						<p:calendar id="fechaFin" showOn="button"
+							value="#{HistoricoBetasController.fechafin}" pattern="yyyy-MM-dd"
+							mindate="#{HistoricoBetasController.fechaini}" locale="es"
+							navigator="true" required="true"
+							requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+					</p:panelGrid>
+					<br />
+					<div align="center">
+						<p:commandButton value="Buscar" process="@form"
+							actionListener="#{HistoricoBetasController.consultaHistoricosBetas()}"
+							update=":formHistoricoBetas"></p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							actionListener="#{HistoricoBetasController.limpiarCampos('HistoricoBetasController')}"
+							update=":formHistoricoBetas">
+						</p:commandButton>
+					</div>
+
+					<br />
+
+					<div align="center">
+						<h:commandLink rendered="#{HistoricoBetasController.mostrarBoton}"
+							action="#{HistoricoBetasController.descargarCsv()}">
+							<h:graphicImage value="/resources/img/descargar.png"
+								title="Descargar archivo CSV" styleClass="tamanoImagen" />
+						</h:commandLink>
+					</div>
+					<br />
+					<p:dataTable value="#{HistoricoBetasController.historicoBeta}"
+						var="Beta" resizeMode="expand" liveResize="true" reflow="true"
+						rows="10" paginator="true" rowsPerPageTemplate="5,10"
+						rowHover="true" emptyMessage="#{msg['TABLA_VACIA']}">
+						<p:column headerText="Fecha" sortBy="#{Beta.d_fecha}">
+							<h:outputText value="#{Beta.d_fecha}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Beta 0" sortBy="#{Beta.EBeta0}">
+							<div align="right">
+								<h:outputText value="#{Beta.EBeta0}">
+									<f:convertNumber
+										minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+										maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+								</h:outputText>
+							</div>
+						</p:column>
+						<p:column headerText="Beta 1" sortBy="#{Beta.EBeta1}">
+							<div align="right">
+								<h:outputText value="#{Beta.EBeta1}">
+									<f:convertNumber
+										minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+										maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+								</h:outputText>
+							</div>
+						</p:column>
+						<p:column headerText="Beta 2" sortBy="#{Beta.EBeta2}">
+							<div align="right">
+								<h:outputText value="#{Beta.EBeta2}">
+									<f:convertNumber
+										minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+										maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+								</h:outputText>
+							</div>
+						</p:column>
+						<p:column headerText="Tao" sortBy="#{Beta.EBeta3}">
+							<div align="right">
+								<h:outputText value="#{Beta.EBeta3}">
+									<f:convertNumber
+										minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+										maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+								</h:outputText>
+							</div>
+						</p:column>
+					</p:dataTable>
+
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

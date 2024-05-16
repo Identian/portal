@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Consultar Curvas</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formGeneral">
+				<p:commandButton value="Nueva Curva"
+					onclick="PF('dlgGuardar').show();" update=":formGuardar:panelCurva"
+					actionListener="#{curvasController.limpiarCampos('curvasController')}">
+				</p:commandButton>
+				<br />
+				<p:dataTable id="tableCurva" value="#{curvasController.curvasList}"
+					var="tcurva" resizeMode="expand" liveResize="true" reflow="true"
+					rows="10" paginator="true" rowsPerPageTemplate="5,10"
+					rowHover="true" emptyMessage="#{msg['CURVA_E7']}">
+
+					<p:column headerText="Id TipoCurva" filterBy="#{tcurva.iTipocurva}"
+						sortBy="#{tcurva.iTipocurva}">
+						<h:outputText value="#{tcurva.iTipocurva}" />
+					</p:column>
+
+					<p:column headerText="Nombre" filterBy="#{tcurva.cNombre}"
+						sortBy="#{tcurva.cNombre}">
+						<h:outputText value="#{tcurva.cNombre}" />
+					</p:column>
+
+					<p:column headerText="Descripcion"
+						filterBy="#{tcurva.cDescripcion}" sortBy="#{tcurva.cDescripcion}">
+						<h:outputText value="#{tcurva.cDescripcion}" />
+					</p:column>
+
+					<p:column style="width:70px">
+						<div align="center">
+							<p:commandButton icon="ui-icon-pencil" id="btnModificar"
+								actionListener="#{curvasController.setTipoCurvaDto(tcurva)}"
+								action="#{curvasController.modificarForm()}"
+								update=":formModificar:panelCurvaMod:"
+								onclick="PF('dlgModificar').show();">
+							</p:commandButton>
+						</div>
+					</p:column>
+
+					<p:column style="width:50px">
+						<div align="center">
+							<p:commandButton icon="ui-icon-trash"
+								actionListener="#{curvasController.setTipoCurvaDto(tcurva)}"
+								action="#{curvasController.eliminarCurva()}" >
+								<p:confirm header="Confirmación" icon="ui-icon-alert" 
+									message="#{curvasController.msgEliminar}" />
+							</p:commandButton>
+						</div>
+					</p:column>
+
+				</p:dataTable>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Yes" type="button" 
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+				<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+			</h:form>
+			
+
+			<h:form id="formGuardar">
+				<p:dialog header="Crear Curva" widgetVar="dlgGuardar" modal="true"
+					responsive="true" id="dlgGuardarParam" resizable="false"
+					draggable="true" closable="true">
+					<p:fieldset legend="Información General">
+						<p:messages layout="table" closable="true" autoUpdate="true" />
+						<p:panelGrid columns="2" id="panelCurva" layout="grid" >
+
+							<p:outputLabel for="nombre" value="Nombre"></p:outputLabel>
+							<p:inputText id="nombre" placeholder="Nombre"
+								value="#{curvasController.tipoCurvaDto.cNombre}" required="true"
+								maxlength="30" onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);" resporive="true"
+								requiredMessage="#{msg['CURVA_E1']}"></p:inputText>
+
+							<p:outputLabel for="descripcion" value="Descripción"></p:outputLabel>
+							<p:inputText id="descripcion" placeholder="Descripción"
+								value="#{curvasController.tipoCurvaDto.cDescripcion}"
+								required="true" maxlength="300"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CAMPO_DESCRIPCION']}"></p:inputText>
+
+							<p:outputLabel for="cEjex" value="Ejex"></p:outputLabel>
+							<p:inputText id="cEjex" placeholder="Eje x"
+								value="#{curvasController.tipoCurvaDto.cEjex}" required="true"
+								maxlength="20" onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E2']}"></p:inputText>
+
+							<p:outputLabel for="cEjey" value="Ejey"></p:outputLabel>
+							<p:inputText id="cEjey" placeholder="Eje y"
+								value="#{curvasController.tipoCurvaDto.cEjey}" required="true"
+								maxlength="20" onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E3']}"></p:inputText>
+
+							<p:outputLabel for="cPrefijoArchivo" value="Prefijo Archivo"></p:outputLabel>
+							<p:inputText id="cPrefijoArchivo" placeholder="Prefijo Archivo"
+								value="#{curvasController.tipoCurvaDto.cPrefijoArchivo}"
+								required="true" maxlength="200"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E4']}"></p:inputText>
+
+							<p:outputLabel for="iorder" value="Orden"></p:outputLabel>
+							<p:inputText id="iorder" placeholder="iorder"
+								value="#{curvasController.tipoCurvaDto.iOrden}" required="true"
+								maxlength="3" onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E5']}"></p:inputText>
+
+							<p:outputLabel for="cMuestraCurva" value="Muestra Curva"></p:outputLabel>
+							<p:inputText id="cMuestraCurva" placeholder="Muestra Curva"
+								value="#{curvasController.tipoCurvaDto.muestraCurva}"
+								required="true" maxlength="1"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E6']}"></p:inputText>
+
+						</p:panelGrid>
+						<br />
+						<div align="center">
+							<p:commandButton id="btnGuardar" value="Guardar" process="@form"
+								update=":formGuardar:panelCurva :formGeneral"
+								actionListener="#{curvasController.registrarCurvas()}"></p:commandButton>
+							<p:commandButton id="btnCancelar" value="Cancelar"
+								onclick="PF('dlgGuardar').hide();" process="@this"
+								update=":formGuardar:panelCurva :formGeneral"
+								actionListener="#{curvasController.limpiarCampos('curvasController')}"
+								resetValues="true"></p:commandButton>
+						</div>
+					</p:fieldset>
+
+				</p:dialog>
+
+			</h:form>
+
+			<h:form id="formModificar">
+				<p:dialog header="Modificar Curvas " widgetVar="dlgModificar"
+					modal="true" responsive="true" id="dlgModificarParam"
+					resizable="false" draggable="true" closable="true">
+					<p:fieldset legend="Modificar">
+						<p:messages layout="table" closable="true" autoUpdate="true" />
+						<p:panelGrid columns="2" id="panelCurvaMod" layout="grid">
+
+
+							<p:outputLabel for="nombre" value="Nombre"
+								rendered="#{curvasController.bolModificar}"></p:outputLabel>
+							<p:inputText id="nombre" placeholder="Nombre"
+								rendered="#{curvasController.bolModificar}"
+								value="#{curvasController.tipoCurvaDto.cNombre}" required="true"
+								maxlength="30" onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E1']}"></p:inputText>
+
+							<p:outputLabel for="descripcion" value="Descripción"
+								rendered="#{curvasController.bolModificar}"></p:outputLabel>
+							<p:inputText id="descripcion" placeholder="Descripción"
+								rendered="#{curvasController.bolModificar}"
+								value="#{curvasController.tipoCurvaDto.cDescripcion}"
+								required="true" maxlength="100"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CAMPO_DESCRIPCION']}"></p:inputText>
+
+							<p:outputLabel for="ejeX" value="ejeX"
+								rendered="#{curvasController.bolModificar}"></p:outputLabel>
+							<p:inputText id="ejeX" placeholder="eje X"
+								rendered="#{curvasController.bolModificar}"
+								value="#{curvasController.tipoCurvaDto.cEjex}" required="true"
+								maxlength="20" onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E2']}"></p:inputText>
+
+							<p:outputLabel for="ejeY" value="ejeY"
+								rendered="#{curvasController.bolModificar}"></p:outputLabel>
+							<p:inputText id="ejeY" placeholder="eje Y"
+								rendered="#{curvasController.bolModificar}"
+								value="#{curvasController.tipoCurvaDto.cEjey}" required="true"
+								maxlength="20" onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E3']}"></p:inputText>
+
+							<p:outputLabel for="prefijoArchivo" value="prefijo Archivo"
+								rendered="#{curvasController.bolModificar}"></p:outputLabel>
+							<p:inputText id="prefijoArchivo" placeholder="prefijo Archivo"
+								rendered="#{curvasController.bolModificar}"
+								value="#{curvasController.tipoCurvaDto.cPrefijoArchivo}"
+								required="true" maxlength="200"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E4']}"></p:inputText>
+
+							<p:outputLabel for="orden" value="Orden"
+								rendered="#{curvasController.bolModificar}"></p:outputLabel>
+							<p:inputText id="orden" placeholder="Orden"
+								rendered="#{curvasController.bolModificar}"
+								value="#{curvasController.tipoCurvaDto.iOrden}" required="true"
+								maxlength="3" onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E5']}"></p:inputText>
+
+							<p:outputLabel for="muestraCurva" value="nuestraCurva"
+								rendered="#{curvasController.bolModificar}"></p:outputLabel>
+							<p:inputText id="muestraCurva" placeholder="Orden"
+								rendered="#{curvasController.bolModificar}"
+								value="#{curvasController.tipoCurvaDto.muestraCurva}"
+								required="true" maxlength="1"
+								onkeypress="campoAlfaNumerico(this);"
+								onkeydown="campoAlfaNumerico(this);"
+								onkeyup="campoAlfaNumerico(this);"
+								requiredMessage="#{msg['CURVA_E6']}"></p:inputText>
+
+						</p:panelGrid>
+						<br />
+						<div align="center">
+							<p:commandButton value="Guardar"
+								actionListener="#{curvasController.modificarCurva()}"
+								update=":formGeneral" process="@form"></p:commandButton>
+							<p:commandButton value="Regresar" ajax="false"
+								update=":formModificar:panelCurvaMod"
+								actionListener="#{curvasController.limpiarCampos('curvasController')}"
+								onclick="PF('dlgModificar').hide(); eliminarFondoDialog(); "></p:commandButton>
+						</div>
+					</p:fieldset>
+				</p:dialog>
+
+			</h:form>
+
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

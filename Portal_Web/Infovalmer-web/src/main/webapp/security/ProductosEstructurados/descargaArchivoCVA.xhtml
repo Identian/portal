@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Descarga de archivos CVA</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formDescargaCva">
+				<p:fieldset legend="Descargar de archivos">
+					<p:outputLabel
+						value="Necesario para mostrar el message cuando se cargar el xhtml"
+						rendered="#{archivosCva.mensaje}"></p:outputLabel>
+					<p:messages autoUpdate="true" closable="true" />
+					<p:panelGrid columns="2" layout="grid">
+						<p:outputLabel for="fechaFinal" value="Fecha de consulta: "></p:outputLabel>
+						<p:calendar id="fechaFinal" showOn="button" pattern="yyyy-MM-dd"
+							locale="es" navigator="true" required="true"
+							mindate="#{archivosCvaController.minimoFechaInicial}"
+							value="#{archivosCva.fechaConsulta}"
+							requiredMessage="#{msg['FECHA_FINAL_E2']}">
+							<p:ajax event="dateSelect"
+								listener="#{archivosCva.consultarArchivosCva()}"
+								update=":formDescargaCva" />
+						</p:calendar>
+					</p:panelGrid>
+					<p:separator />
+					<h:commandButton value="Descargar seleccionados"
+						actionListener="#{archivosCva.descargarSeleccionados()}"></h:commandButton>
+					<p:separator />
+
+					<p:dataTable id="tblArchivosCva" var="archivo"
+						emptyMessage="#{msg['TABLA_VACIA']}" resizeMode="expand"
+						liveResize="true" reflow="true" rows="10" paginator="true"
+						rowsPerPageTemplate="5,10" rowHover="true"
+						selection="#{archivosCva.selectListaArchivos}"
+						value="#{archivosCva.listaArchivosConsultar}" rowKey="#{archivo}">
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
+						<p:column headerText="Nombre">
+							<h:outputText value="#{archivo.nombre}" />
+						</p:column>
+						<p:column headerText="Tamaño">
+							<h:outputText value="#{archivo.tamano} bytes" />
+						</p:column>
+						<p:column headerText="Modificado">
+							<h:outputText
+								value="#{archivosCva.formatoFechas3.format(archivo.fecha)} " />
+						</p:column>
+						<p:column headerText="Descargar">
+							<center>
+								<h:commandLink
+									actionListener="#{archivosCva.descargarArchivo(archivo)}">
+									<h:graphicImage value="/resources/img/descargar.png"
+										title="Descargar archivo" styleClass="tamanoImagen" />
+								</h:commandLink>
+							</center>
+						</p:column>
+					</p:dataTable>
+
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

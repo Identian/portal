@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Consulta Agrupador</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:messages autoUpdate="true" closable="true" showDetail="false" />
+				<p:commandButton value="Nuevo Agrupador"
+					actionListener="#{AgrupadorController.limpiarCampos('AgrupadorController')}"
+					onclick="PF('Agrupador').show();" resetValues="true"
+					update=":formNuevoAgrupador:panelNuevoAgrupador" />
+
+				<p:dataTable value="#{AgrupadorController.agrupadorList}"
+					var="agrupador" editable="true" id="tblAgrupadores"
+					paginator="true" resizeMode="expand" liveResize="true"
+					reflow="true" rows="10" rowsPerPageTemplate="5,10"
+					rowHover="true"
+					filteredValue="#{AgrupadorController.agrupadorFiltered}"
+					emptyMessage="#{AgrupadorController.msgTablaVacia}">
+					<p:ajax event="rowEdit"
+						listener="#{AgrupadorController.modificarAgrupador}"
+						process="@all"></p:ajax>
+
+					<p:column headerText="Descripción" sortBy="#{agrupador.cNombre}"
+						filterBy="#{agrupador.cNombre}" filterMatchMode="contains">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{agrupador.cNombre}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{agrupador.cNombre}" required="true"
+									requiredMessage="el campo descripción es requerido" />
+							</f:facet>
+
+						</p:cellEditor>
+					</p:column>
+					<p:column headerText="Etiqueta" sortBy="#{agrupador.CEtiqueta}"
+						filterBy="#{agrupador.CEtiqueta}" filterMatchMode="contains">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{agrupador.CEtiqueta}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:inputText value="#{agrupador.CEtiqueta}" required="true"
+									requiredMessage="el campo etiqueta es requerido" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column>
+						<div align="center">
+							<p:commandButton value="Asociar curvas"
+								actionListener="#{AgrupadorController.setAgrupadorDto(agrupador)}"
+								action="#{AgrupadorController.consultarCurvas()}"
+								onclick="PF('dlgCurva').show();" update=":formAsociarCurva:dtCurvasList,formAsociarCurva:fldNombre ">
+							</p:commandButton>
+						</div>
+					</p:column>
+
+					<p:column id="columnRowEditor" style="width:50px">
+						<p:rowEditor id="rowEditorAgrupador" cancelTitle="Cancelar"
+							saveTitle="Guardar" editTitle="Modificar"
+							style="align-content: center" />
+					</p:column>
+					<p:column style="width:50px">
+						<div align="center">
+							<p:commandButton icon="ui-icon-trash"
+								actionListener="#{AgrupadorController.eliminarAgrupador(agrupador.IAgrupador)}"
+								update=":form:tblAgrupadores " process="@this">
+								<p:confirm header="Confirmación"
+									message="#{AgrupadorController.msgEliminar}"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+						</div>
+					</p:column>
+
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Si" type="button" 
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+			</h:form>
+			<h:form id="formNuevoAgrupador">
+				<p:dialog modal="true" header="Nuevo Agrupador" closable="false"
+					widgetVar="Agrupador" resizable="false" responsive="true">
+
+					<p:panelGrid columns="2" layout="grid" id="panelNuevoAgrupador"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel>Descripción: </p:outputLabel>
+						<p:inputText value="#{AgrupadorController.descripcion}"
+							required="true"
+							requiredMessage="El campo descripción es obligatorio"></p:inputText>
+						<p:outputLabel>Etiqueta: </p:outputLabel>
+						<p:inputText value="#{AgrupadorController.etiqueta}"
+							required="true"
+							requiredMessage="El campo etiqueta es obligatorio"></p:inputText>
+					</p:panelGrid>
+
+					<br />
+					<div align="center">
+						<p:commandButton value="Guardar"
+							action="#{AgrupadorController.registrarAgrupador}"
+							update=":form:tblAgrupadores" />
+						<p:commandButton value="Cancelar" resetValues="true"
+							id="btnCancelarNuevoAgrupador" process="@this"
+							update=":formNuevoAgrupador"
+							actionListener="#{AgrupadorController.limpiarCampos('AgrupadorController')}"
+							onclick="PF('Agrupador').hide();eliminarFondoDialog();" />
+					</div>
+
+				</p:dialog>
+			</h:form>
+
+			<h:form id="formAsociarCurva">
+
+				<p:dialog modal="true" header="Asociar Curva" closable="false"
+					widgetVar="dlgCurva" resizable="false" responsive="true">
+					<p:fieldset id="fldNombre" legend="#{AgrupadorController.agrupadorDto.cNombre}">
+						<p:dataTable value="#{AgrupadorController.curvasList}"
+							id="dtCurvasList" emptyMessage="No se encontraron curvas"
+							var="curva" resizableColumns="true" resizeMode="expand"
+							liveResize="true" reflow="true" rows="5" paginator="true"
+							rowsPerPageTemplate="5,10" rowHover="true"
+							selection="#{AgrupadorController.curvasPorAgrupadorList}"
+							rowKey="#{curva.iTipocurva}">
+
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center"  />
+
+							<p:column headerText="Nombre" sortBy="#{curva.cNombre}"
+								filterBy="#{curva.cNombre}" filterMatchMode="contains">
+								<h:outputText value="#{curva.cNombre}" />
+							</p:column>
+
+							<p:column headerText="Prefijo" sortBy="#{curva.cPrefijoArchivo}"
+								filterBy="#{curva.cPrefijoArchivo}" filterMatchMode="contains">
+								<h:outputText value="#{curva.cPrefijoArchivo}" />
+							</p:column>
+
+						</p:dataTable>
+						<div align="center">
+							<p:commandButton value="Asociar seleccionados" ajax="false"
+								update=":formAsociarCurva:dtCurvasList"
+								action="#{AgrupadorController.asociarCurva()}">
+							</p:commandButton>
+							<p:commandButton value="Cancelar" resetValues="true"
+								id="btnCancelarNuevoAgrupador" process="@this"
+								update=":formAsociarCurva"
+								actionListener="#{AgrupadorController.limpiarCampos('AgrupadorController')}"
+								onclick="PF('Agrupador').hide();eliminarFondoDialog();" />
+						</div>
+					</p:fieldset>
+				</p:dialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

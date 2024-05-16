@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Historico de monedas</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formHistoricoMonedas">
+				<p:fieldset legend="Históricos por Monedas">
+					<p:outputLabel
+						value="Necesario para mostrar el message cuando se redirecciona desde pagina de Indicadores"
+						rendered="#{historicoMonedasController.viewMessage}"></p:outputLabel>
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<p:panelGrid columns="2" layout="grid" id="panelSelectTipo">
+						<p:outputLabel for="monedas" value="Monedas:" />
+						<p:selectOneMenu id="monedas" filter="true"
+							filterMatchMode="contains" style="width:90%"
+							value="#{historicoMonedasController.monedasVistaDto.tipoMoneda}"
+							required="true"
+							requiredMessage="#{msg['SELECT_MENSAJE_GENERAL']}">
+							<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+							<f:selectItems
+								value="#{historicoMonedasController.listTipoMoneda}"
+								var="tipoTasa" itemLabel="#{tipoTasa.cTipomoneda}"
+								itemValue="#{tipoTasa.cTipomoneda}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="fechaIni" value="Fecha Inicial:" />
+						<p:calendar id="fechaIni" showOn="button"
+							mindate="#{historicoMonedasController.minimoFechaInicial}"
+							value="#{historicoMonedasController.monedasVistaDto.fechaInicial}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							requiredMessage="#{msg['FECHA_INICIAL_E1']}">
+							<p:ajax event="dateSelect" update="fechaFin" process="@this" />
+						</p:calendar>
+						<p:outputLabel for="fechaFin" value="Fecha Final:" />
+						<p:calendar id="fechaFin" showOn="button"
+							value="#{historicoMonedasController.monedasVistaDto.fechaFinal}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							mindate="#{historicoMonedasController.monedasVistaDto.fechaInicial}"
+							requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+					</p:panelGrid>
+					<br />
+					<center>
+						<p:commandButton value="Buscar" process="@form"
+							actionListener="#{historicoMonedasController.consultarHistoricoMonedas()}"
+							update=":formHistoricoMonedas"></p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							actionListener="#{historicoMonedasController.limpiarCampos('historicoMonedasController')}"
+							update=":formHistoricoMonedas">
+						</p:commandButton>
+					</center>
+				</p:fieldset>
+				<br />
+				<p:fieldset rendered="#{historicoMonedasController.viewGrafica}">
+					<p:chart type="line" widgetVar="graficaMonedas"
+						model="#{historicoMonedasController.graficaHistoricoMonedas}"
+						responsive="true" />
+
+					<p:panelGrid style="width:100%">
+						<p:row>
+							<p:column style="width:50%">
+								<center>
+									<p:commandButton type="button"
+										value="#{msg['RESTABLECER_GRAFICA_NOMBRE']}"
+										icon="ui-icon-cancel"
+										onclick="PF('graficaMonedas').resetZoom()" />
+								</center>
+							</p:column>
+							<p:column style="width:50%">
+								<center>
+									<h:commandLink
+										rendered="#{historicoMonedasController.viewGrafica}"
+										actionListener="#{historicoMonedasController.descargarCsv()}">
+										<h:graphicImage value="/resources/img/descargar.png"
+											title="Descargar archivo CSV" styleClass="tamanoImagen" />
+									</h:commandLink>
+								</center>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

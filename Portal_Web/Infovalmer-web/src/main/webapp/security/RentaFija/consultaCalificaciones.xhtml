@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Consulta Calificaciones</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formConsultaCalificaiones">
+				<p:fieldset legend="Consulta Calificaciones">
+					<p:outputLabel
+						value="Necesario para mostrar el message cuando se redirecciona desde pagina de Indicadores"
+						rendered="#{consultaCalificacionesController.viewMessage}"></p:outputLabel>
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="2" layout="grid" id="panelSelectTipo">
+							<p:outputLabel for="emisor" value="Emisor:" />
+							<p:selectOneMenu id="emisor" filter="true"
+								filterMatchMode="contains"
+								value="#{consultaCalificacionesController.emisorSelected}">
+								<p:ajax
+									listener="#{consultaCalificacionesController.consultarCalificacionesEmisor}"
+									update="formConsultaCalificaiones" />
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{consultaCalificacionesController.listaEmisores}"
+									var="itemEmisor" itemLabel="#{itemEmisor.CNombre}"
+									itemValue="#{itemEmisor.CEmisor}" />
+							</p:selectOneMenu>
+							<p:outputLabel for="nemo" value="Nemotécnico:" />
+							<p:autoComplete id="nemo"
+								minQueryLength="#{consultaCalificacionesController.consultaMinimoCaracteres()}"
+								forceSelection="true"
+								maxResults="#{consultaCalificacionesController.consultaMaximoResultados()}"
+								value="#{consultaCalificacionesController.nemoSelected}"
+								completeMethod="#{consultaCalificacionesController.autocompletarNemo}"
+								effect="fade" scrollHeight="300">
+								<p:ajax event="itemSelect"
+									listener="#{consultaCalificacionesController.consultarCalificacionesNemo}"
+									update="formConsultaCalificaiones" />
+							</p:autoComplete>
+						</p:panelGrid>
+					</div>
+					<br />
+					<p:fieldset
+						rendered="#{consultaCalificacionesController.viewCalEmisorTable}">
+						<center>
+							<h:commandLink ajax="false"
+								rendered="#{consultaCalificacionesController.viewCalEmisorTable}"
+								actionListener="#{consultaCalificacionesController.descargarCsvEmisor}">
+								<h:graphicImage value="/resources/img/descargar.png"
+									title="Descargar archivo CSV" styleClass="tamanoImagen" />
+							</h:commandLink>
+						</center>
+
+						<br />
+
+						<p:dataTable emptyMessage="#{msg['TABLA_VACIA']}"
+							value="#{consultaCalificacionesController.listaCalEmisor}"
+							var="calEmisor" id="tblCalEmisor" resizeMode="expand"
+							rowHover="true" liveResize="true" reflow="true" rows="10"
+							paginator="true" rowsPerPageTemplate="5,10">
+							<p:column headerText="Emisor">
+								<h:outputText value="#{calEmisor.cEmisor}" />
+							</p:column>
+							<p:column headerText="Fecha Calificación">
+								<h:outputText value="#{calEmisor.dFechaasignada}" />
+							</p:column>
+							<p:column headerText="Plazo">
+								<h:outputText value="#{calEmisor.etiquetaPlazo}" />
+							</p:column>
+							<p:column headerText="Calificadora">
+								<h:outputText value="#{calEmisor.nombreCalificadora}" />
+							</p:column>
+							<p:column headerText="Calificación">
+								<h:outputText value="#{calEmisor.cCalificacion}" />
+							</p:column>
+						</p:dataTable>
+
+					</p:fieldset>
+
+
+					<p:fieldset
+						rendered="#{consultaCalificacionesController.viewCalTituloTable}">
+						<p:panelGrid style="width:100%">
+							<p:row>
+								<p:column style="width:100%">
+									<center>
+										<h:commandLink ajax="false"
+											actionListener="#{consultaCalificacionesController.descargarCsvTitulo}">
+											<h:graphicImage value="/resources/img/descargar.png"
+												title="Descargar archivo CSV" styleClass="tamanoImagen" />
+										</h:commandLink>
+									</center>
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+
+
+						<p:dataTable
+							value="#{consultaCalificacionesController.listaCalTitulo}"
+							var="calTitulo" id="tblCalTitulo" resizeMode="expand"
+							liveResize="true" reflow="true" rows="10" paginator="true"
+							rowsPerPageTemplate="5,10"
+							emptyMessage="#{msg['TABLA_VACIA']}">
+							<p:column headerText="Fecha Calificación">
+								<h:outputText value="#{calTitulo.dFechaasignada}" />
+							</p:column>
+							<p:column headerText="Nemotécnico">
+								<h:outputText value="#{calTitulo.cNemotecnico}" />
+							</p:column>
+							<p:column headerText="Calificadora">
+								<h:outputText value="#{calTitulo.nombreCalificadora}" />
+							</p:column>
+							<p:column headerText="Calificación">
+								<h:outputText value="#{calTitulo.cCalificacion}" />
+							</p:column>
+						</p:dataTable>
+
+					</p:fieldset>
+					<br />
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Histórico por punto</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formHistoricoPuntos">
+				<p:fieldset legend="Histórico por punto">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<p:panelGrid columns="2" layout="grid" id="panelSelectCurva"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel value="Curvas" for="selectCurvas"></p:outputLabel>
+						<p:selectOneMenu value="#{historicoPuntosController.vista.curva}"
+							id="selectCurvas" required="true" filter="true"
+							filterMatchMode="contains" style="width:90%" height="200"
+							requiredMessage="#{msg['SELECT_MENSAJE_GENERAL']}">
+							<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+							<f:selectItems value="#{historicoPuntosController.listaCurvas}"
+								var="curva" itemLabel="#{curva.cNombre}"
+								itemValue="#{curva.cCurcerocupon}"></f:selectItems>
+						</p:selectOneMenu>
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" id="panelSelectCurvaFechas"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="fechaIni" value="Fecha Inicial:" />
+						<p:calendar id="fechaIni" showOn="button"
+							value="#{historicoPuntosController.vista.fechaInicial}"
+							mindate="#{historicoPuntosController.minimoFechaInicial}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							requiredMessage="#{msg['FECHA_INICIAL_E1']}">
+							<p:ajax event="dateSelect" update="fechaFin" process="@this" />
+						</p:calendar>
+						<p:outputLabel for="fechaFin" value="Fecha Final:" />
+						<p:calendar id="fechaFin" showOn="button"
+							value="#{historicoPuntosController.vista.fechaFinal}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							mindate="#{historicoPuntosController.vista.fechaInicial}"
+							requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+					</p:panelGrid>
+					<br />
+					<center>
+						<p:commandButton id="btnBuscar" value="Buscar"
+							actionListener="#{historicoPuntosController.consultarHistoricoPuntos()}"
+							update=":formHistoricoPuntos" process="@form"></p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							actionListener="#{historicoPuntosController.limpiarCampos('historicoPuntosController')}"
+							update=":formHistoricoPuntos">
+						</p:commandButton>
+					</center>
+				</p:fieldset>
+				<br />
+				<p:fieldset rendered="#{historicoPuntosController.viewGrafica}">
+					<p:chart type="ohlc" widgetVar="graficaPuntos"
+						model="#{historicoPuntosController.graficaHistoricoPuntos}"
+						responsive="true" />
+					<br />
+					<p:panelGrid style="width:100%">
+						<p:row>
+							<p:column style="width:50%">
+								<center>
+									<p:commandButton type="button"
+										value="#{msg['RESTABLECER_GRAFICA_NOMBRE']}"
+										icon="ui-icon-cancel"
+										onclick="PF('graficaPuntos').resetZoom()" />
+								</center>
+							</p:column>
+							<p:column style="width:50%">
+								<center>
+									<p:commandLink ajax="false" process="@none"
+										actionListener="#{historicoPuntosController.descargarCsv()}">
+										<h:graphicImage value="/resources/img/descargar.png"
+											title="Descargar archivo CSV" styleClass="tamanoImagen" />
+										<p:fileDownload value="#{historicoPuntosController.file}" />
+									</p:commandLink>
+								</center>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

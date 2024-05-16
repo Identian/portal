@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Descarga archivos por agrupador</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<!-- h:form id="formDescargaOtc"  -->
+
+			<p:fieldset legend="Descargar Archivo Agrupador">
+				<h:form id="formDescarga1">
+					<p:messages id="msg" layout="table" closable="true"
+						autoUpdate="true" />
+					<p:panelGrid id="gridFiltros" layout="grid" columns="2"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel value="Agrupadores" />
+						<p:selectOneMenu id="autAgrupador" converter="agrupadorConverter"
+							value="#{descargaArchivosOTCController.tipoCurvaAgrupadorCurrent}"
+							filter="true" filterMatchMode="contains" style="width:90%">
+							<f:selectItems
+								value="#{descargaArchivosOTCController.listAgrupador}"
+								var="agrupador" itemLabel="#{agrupador.cNombre}"
+								itemValue="#{agrupador}"></f:selectItems>
+						</p:selectOneMenu>
+						<p:outputLabel for="popupFecha" value="Fecha" />
+						<p:calendar id="popupFecha" required="true" pattern="yyyy-MM-dd"
+							locale="es" navigator="true" showOn="button"
+							requiredMessage="Fecha requerida"
+							value="#{descargaArchivosOTCController.fechaFinal}" />
+					</p:panelGrid>
+					<br />
+					<div align="center">
+						<p:commandButton value="Buscar" id="btnBuscar"
+							widgetVar="btnBuscar"
+							actionListener="#{descargaArchivosOTCController.find}"
+							update=":formDescarga2" process="@form"></p:commandButton>
+					</div>
+
+
+					<br />
+				</h:form>
+				<h:form id="formDescarga2">
+					<p:commandButton value="Descargar seleccionados"
+						rendered="#{descargaArchivosOTCController.flagPanelTabla}"
+						action="#{descargaArchivosOTCController.generarZip()}"
+						update=":formDescarga21:msg" ajax="false"
+						onclick="PrimeFaces.monitorDownload(start, stop);">
+						<p:fileDownload value="#{descargaArchivosOTCController.file}"></p:fileDownload>
+					</p:commandButton>
+					
+					<p:dataTable value="#{descargaArchivosOTCController.listaArchivos}"
+						id="dtDescargaArchivos" emptyMessage="No se encontraron archivos"
+						var="archivo" resizableColumns="true" resizeMode="expand"
+						liveResize="true" reflow="true" rows="10" paginator="true"
+						rowsPerPageTemplate="5,10" rowHover="true"
+						selection="#{descargaArchivosOTCController.listaArchivosCurrent}"
+						rowKey="#{archivo.iTipocurva}">
+
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
+
+						<p:column headerText="Archivo" sortBy="#{archivo.cNombre}"
+							filterBy="#{archivo.cNombre}" filterMatchMode="contains">
+							<h:outputText value="#{archivo.cNombre}" />
+						</p:column>
+
+						<p:column headerText="Prefijo" sortBy="#{archivo.cPrefijoArchivo}"
+							filterBy="#{archivo.cPrefijoArchivo}" filterMatchMode="contains">
+							<h:outputText value="#{archivo.cPrefijoArchivo}" />
+						</p:column>
+
+						<p:column headerText="Descargar">
+							<center>
+								<h:commandLink
+									actionListener="#{descargaArchivosOTCController.descargarArchivo}">
+									<f:param name="cPrefijoArchivo"
+										value="#{archivo.cPrefijoArchivo}" />
+									<f:param name="nombreArchivo" value="#{archivo.cNombre}" />
+									<h:graphicImage value="/resources/img/descargar.png"
+										title="Descargar Archivo" styleClass="tamanoImagen" />
+								</h:commandLink>
+							</center>
+						</p:column>
+					</p:dataTable>
+
+				</h:form>
+			</p:fieldset>
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

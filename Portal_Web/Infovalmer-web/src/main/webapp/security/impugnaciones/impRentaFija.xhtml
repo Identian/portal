@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Impugnación Renta Fija</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formRentaFija">
+				<f:metadata>
+					<f:viewParam name="horaImp"
+						value="#{impugnacionController.horaImpugnacion}" />
+					<f:event listener="#{impugnacionController.validarTiempo()}"
+						type="preRenderComponent"></f:event>
+					<f:event
+						listener="#{impugnacionController.setIdFormExecuteScript('formRentaFija')}"
+						type="preRenderComponent"></f:event>
+				</f:metadata>
+				<p:fieldset legend="Impugnación Renta Fija Local">
+					<div align="center">
+						<p:panelGrid id="principalGrid" columns="2">
+
+							<p:outputLabel value="Tiempo restante para impugnación:"
+								for="labelRestante"></p:outputLabel>
+							<p:outputLabel id="labelRestante" value=""></p:outputLabel>
+
+							<p:outputLabel for="labeLimite"
+								value="Hora límite para impugnar:" />
+							<p:outputLabel id="labeLimite"
+								value="#{impugnacionController.horaImpugnacion}" />
+						</p:panelGrid>
+					</div>
+					<p:messages id="messages" autoUpdate="true" closable="true" />
+
+					<p:spacer height="10" />
+					<div class="ui-fluid">
+						<p:panelGrid id="gridCausas" columns="2" layout="grid">
+
+							<p:outputLabel value="Causas" for="comboCausas" />
+
+							<p:selectOneMenu id="comboCausas"
+								value="#{impugnacionController.causa}" filter="true"
+								filterMatchMode="contains" effect="fade">
+								<f:selectItems value="#{impugnacionController.listaCausas}" />
+								<p:ajax event="change"
+									listener="#{impugnacionController.eventoCausa}"
+									update=":formRentaFija:accionBotones :formRentaFija:gridCausas"
+									process="@this" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Nemotécnico: " for="textNemo"
+								rendered="#{impugnacionController.flagNoCategoria}" />
+							<p:autoComplete id="textNemo" forceSelection="true"
+								minQueryLength="#{impugnacionController.consultaMinimoCaracteres()}"
+								value="#{impugnacionController.nemotecnico}"
+								maxResults="#{impugnacionController.consultaMaximoResultados()}"
+								completeMethod="#{impugnacionController.autoCompletarNemotecnicos}"
+								required="true" requiredMessage="#{msg['CAMPO_NEMOTECNICOS']}"
+								rendered="#{impugnacionController.flagNoCategoria}"
+								effect="fade" scrollHeight="300" />
+
+							<p:outputLabel value="ISIN: " for="textIsin"
+								rendered="#{impugnacionController.flagNoCategoria}" />
+							<p:autoComplete id="textIsin" forceSelection="true"
+								maxResults="#{impugnacionController.consultaMaximoResultados()}"
+								minQueryLength="#{impugnacionController.consultaMinimoCaracteres()}"
+								value="#{impugnacionController.isin}"
+								required="false"
+								completeMethod="#{impugnacionController.autocompletarIsin}"						
+								requiredMessage="#{msg['CAMPO_ISIN']}"
+								rendered="#{impugnacionController.flagNoCategoria}"
+								effect="fade" scrollHeight="300" />
+
+							<p:outputLabel value="Descripción" for="textDescripcion"
+								rendered="#{impugnacionController.flagCategoria || impugnacionController.flagNoCategoria}" />
+							<p:inputTextarea id="textDescripcion"
+								rendered="#{impugnacionController.flagCategoria || impugnacionController.flagNoCategoria}"
+								value="#{impugnacionController.textDescripcion}" required="true"
+								requiredMessage="#{msg['CAMPO_DESCRIPCION']}" />
+
+							<p:outputLabel value="Teléfono" for="textTelefono"
+								rendered="#{impugnacionController.flagCategoria || impugnacionController.flagNoCategoria}" />
+							<p:inputMask id="textTelefono"
+								rendered="#{impugnacionController.flagCategoria || impugnacionController.flagNoCategoria}"
+								value="#{impugnacionController.telefono}" required="true"
+								mask="99?9999?9999" maxlength="10"
+								requiredMessage="#{msg['CAMPO_TELEFONO']}"
+								validatorMessage="El campo solo recibe 10 caracteres">
+								<f:validateLength maximum="10" />
+							</p:inputMask>
+
+							<p:outputLabel value="Email" for="textEmail"
+								rendered="#{impugnacionController.flagCategoria || impugnacionController.flagNoCategoria}" />
+							<p:inputText id="textEmail" maxlength="60"
+								requiredMessage="#{msg['CAMPO_CORREO']}"
+								value="#{impugnacionController.email}" required="true"
+								rendered="#{impugnacionController.flagCategoria || impugnacionController.flagNoCategoria}">
+								<f:validator validatorId="custom.emailValidator" />
+							</p:inputText>
+
+							<p:outputLabel value="Clase" for="comboClase"
+								rendered="#{impugnacionController.flagCategoria}" />
+							<p:selectOneMenu id="comboClase"
+								rendered="#{impugnacionController.flagCategoria}"
+								value="#{impugnacionController.clase}" filter="true"
+								filterMatchMode="contains" effect="fade">
+								<f:selectItems value="#{impugnacionController.listaClases}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Moneda" for="comboMoneda"
+								rendered="#{impugnacionController.flagCategoria}" />
+							<p:selectOneMenu id="comboMoneda"
+								rendered="#{impugnacionController.flagCategoria}"
+								value="#{impugnacionController.strMoneda}" filter="true"
+								filterMatchMode="contains" effect="fade">
+								<f:selectItems value="#{impugnacionController.listaMonedas}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Tasa" for="comboTasa"
+								rendered="#{impugnacionController.flagCategoria}" />
+							<p:selectOneMenu id="comboTasa"
+								rendered="#{impugnacionController.flagCategoria}"
+								value="#{impugnacionController.strTasa}" filter="true"
+								filterMatchMode="contains" effect="fade">
+								<f:selectItems value="#{impugnacionController.listaTasas}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Rango de días" for="comboRDV"
+								rendered="#{impugnacionController.flagCategoria}" />
+							<p:selectOneMenu id="comboRDV"
+								rendered="#{impugnacionController.flagCategoria}"
+								value="#{impugnacionController.strRDV}" filter="true"
+								filterMatchMode="contains" effect="fade">
+								<f:selectItems value="#{impugnacionController.listaRDV}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</div>
+					<p:spacer height="10" />
+					<p:fieldset id="accionBotones">
+						<div align="center">
+							<p:commandButton value="Guardar" id="btnGuardar" process="@form"
+								actionListener="#{impugnacionController.impugnarRentaFija}"
+								disabled="#{impugnacionController.flagBotonImpugnar}"
+								update=":formRentaFija:gridCausas" />
+							<p:commandButton id="btnCancelar" value="Cancelar"
+								process="@this" 
+								oncomplete="limpiarForm('formRentaFija')"
+								resetValues="true"
+								update=":formRentaFija:gridCausas" />
+						</div>
+					</p:fieldset>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+	<script type="text/javascript">
+		/**
+		 * Faces Validator
+		 */
+		PrimeFaces.validator['custom.emailValidator'] = {
+
+			pattern : /\S+@\S+/,
+
+			validate : function(element, value) {
+				//use element.data() to access validation metadata, in this case there is none.
+				if (!this.pattern.test(value)) {
+					throw {
+						summary : 'Error de validacion',
+						detail : value + ' no es email valido.'
+					}
+				}
+			}
+		};
+	</script>
+</h:body>
+</html>

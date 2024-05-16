@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Historico de Índices</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formHistoricoIndices">
+				<p:fieldset legend="Históricos por Índices">
+					<p:outputLabel
+						value="Necesario para mostrar el message cuando se redirecciona desde pagina de Indicadores"
+						rendered="#{historicoIndicesController.viewMessage}"></p:outputLabel>
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="2" layout="grid" id="panelSelectTipo"
+							styleClass="ui-panelgrid-blank">
+							<p:outputLabel for="indices" value="Índices:" />
+							<p:selectOneMenu id="indices" filter="true"
+								filterMatchMode="contains" height="200"
+								value="#{historicoIndicesController.histIndicesVista.indice}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{historicoIndicesController.listaIndices}"
+									var="itemIndice"
+									itemLabel="#{itemIndice.CIndice} - #{itemIndice.CNombre}"
+									itemValue="#{itemIndice.CIndice}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</div>
+					<p:panelGrid columns="2" layout="grid" id="panelSelectTipoFechas"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="fechaIni" value="Fecha Inicial:" />
+						<p:calendar id="fechaIni" showOn="button"
+							mindate="#{historicoIndicesController.minimoFechaInicial}"
+							value="#{historicoIndicesController.histIndicesVista.fechaInicial}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							requiredMessage="#{msg['FECHA_INICIAL_E1']}">
+							<p:ajax event="dateSelect" update="fechaFin" />
+						</p:calendar>
+						<p:outputLabel for="fechaFin" value="Fecha Final:" />
+						<p:calendar id="fechaFin" showOn="button"
+							value="#{historicoIndicesController.histIndicesVista.fechaFinal}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							mindate="#{historicoIndicesController.histIndicesVista.fechaInicial}"
+							requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+					</p:panelGrid>
+					<br />
+					<center>
+						<p:commandButton value="Buscar" process="@form"
+							actionListener="#{historicoIndicesController.consultarHistoricoIndices}"
+							update=":formHistoricoIndices"></p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							actionListener="#{historicoIndicesController.limpiarCampos('historicoIndicesController')}"
+							update=":formHistoricoIndices">
+						</p:commandButton>
+					</center>
+
+					<p:fieldset rendered="#{historicoIndicesController.viewGrafica}">
+						<p:chart type="line"
+							model="#{historicoIndicesController.graficaHistoricoIndice}"
+							responsive="true" widgetVar="graficaIndices" />
+						<br />
+						<p:panelGrid style="width:100%">
+							<p:row>
+								<p:column style="width:50%">
+									<center>
+										<p:commandButton type="button"
+											value="#{msg['RESTABLECER_GRAFICA_NOMBRE']}"
+											icon="ui-icon-cancel"
+											onclick="PF('graficaIndices').resetZoom()" />
+									</center>
+								</p:column>
+								<p:column style="width:50%">
+									<center>
+										<h:commandLink
+											rendered="#{historicoIndicesController.viewGrafica}"
+											ajax="false"
+											actionListener="#{historicoIndicesController.descargarCsv()}">
+											<h:graphicImage value="/resources/img/descargar.png"
+												title="Descargar archivo CSV" styleClass="tamanoImagen" />
+										</h:commandLink>
+									</center>
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:fieldset>
+
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

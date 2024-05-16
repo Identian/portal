@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Infovalmer</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</h:head>
+<h:body>
+	<h:form>
+		<p:megaMenu orientation="horizontal">
+			<p:submenu label="Parametrizacion">
+				<p:column>
+					<p:submenu label="Parametrizacion" icon="ui-icon-check">
+						<p:menuitem value="Archivos"
+							url="/faces/security/Parametrizacion/Archivos/archivos.xhtml" />
+						<p:menuitem value="Indicadores"
+							url="/faces/security/Parametrizacion/Indicadores/indicadores.xhtml" />
+					</p:submenu>
+
+				</p:column>
+			</p:submenu>
+			<p:submenu label="Derivados">
+				<p:column>
+					<p:submenu label="Derivados" icon="ui-icon-check">
+						<p:menuitem value="Consulta Derivados"
+							url="/faces/security/Derivados/consultaDerivados.xhtml" />
+
+						<p:menuitem value="Historico Derivados"
+							url="/faces/security/Derivados/historicoDerivados.xhtml" />
+
+						<p:menuitem value="Calculadora Derivados OTC"
+							url="/faces/security/Derivados/calculadoraDerivadosOTC.xhtml" />
+
+						<p:menuitem value="Derivados Energeticos"
+							url="/faces/security/Derivados/derivadosEnergeticos.xhtml" />
+
+						<p:menuitem value="Derivados Financieros"
+							url="/faces/security/Derivados/derivadosFinancieros.xhtml" />
+
+						<p:menuitem value="Consulta Agrupador"
+							url="/faces/security/Derivados/consultaAgrupador.xhtml" />
+
+						<p:menuitem value="Consulta Curvas"
+							url="/faces/security/Derivados/consultarCurvas.xhtml" />
+
+						<p:menuitem value="Descargar Archivo Agrupador"
+							url="/faces/security/Derivados/descargaArchivosAgrupador.xhtml" />
+
+						<p:menuitem value="Asignación de archivos a perfiles"
+							url="/faces/security/Derivados/asignacionArchivosPerfiles.xhtml" />
+						
+						<p:menuitem value="Carga archivo permiso masivo"
+							url="/faces/security/Derivados/cargarArchivosPermiso.xhtml" />
+
+					</p:submenu>
+				</p:column>
+			</p:submenu>
+
+			<p:submenu label="Impugnaciones">
+				<p:column>
+					<p:submenu label="Impugnaciones" icon="ui-icon-check">
+
+						<p:menuitem value="Impugnaciones Derivados"
+							url="/faces/security/impugnaciones/impDerivados.xhtml?horaImp=2017-01-25%2017:17:00" />
+
+						<p:menuitem value="Impugnaciones Derivados OTC"
+							url="/faces/security/impugnaciones/impDerivadosOTC.xhtml?horaImp=2017-01-25%2017:17:00" />
+
+						<p:menuitem value="Impugnaciones Notas estructuradas"
+							url="/faces/security/impugnaciones/impNotasEstructuradas.xhtml?horaImp=2017-01-25%2017:17:00" />
+
+						<p:menuitem value="Impugnaciones Renta fija"
+							url="/faces/security/impugnaciones/impRentaFija.xhtml?horaImp=2017-04-05%2017:17:00" />
+
+						<p:menuitem value="Impugnaciones Renta fija internacional"
+							url="/faces/security/impugnaciones/impRentafijaInternacional.xhtml?horaImp=2017-01-25%2017:17:00" />
+
+						<p:menuitem value="Impugnaciones Renta variable internacional"
+							url="/faces/security/impugnaciones/impRentaVariableInternacional.xhtml?horaImp=2017-01-25%2017:17:00" />
+
+						<p:menuitem value="Impugnaciones Renta variable local"
+							url="/faces/security/impugnaciones/impRentaVariableLocal.xhtml?horaImp=2017-01-25%2017:17:00" />
+
+						<p:menuitem value="Impugnaciones Renta variable mila imgc"
+							url="/faces/security/impugnaciones/impRentaVariableMilaImgc.xhtml?horaImp=2017-01-25%2017:17:00" />
+
+						<p:menuitem value="Respuestas Impugnaciones"
+							url="/faces/security/impugnaciones/respuestaImpugnaciones.xhtml?horaImp=2017-01-25%2017:17:00" />
+					</p:submenu>
+				</p:column>
+			</p:submenu>
+
+			<p:submenu label="Productos Estructurados">
+				<p:column>
+					<p:submenu label="Productos Estructurados" icon="ui-icon-check">
+						<p:menuitem value="Consulta de productos"
+							url="/faces/security/ProductosEstructurados/consultaProductos.xhtml" />
+						<p:menuitem value="Cargar archivos CVA"
+							url="/faces/security/ProductosEstructurados/cargarArchivosCVA.xhtml" />
+						<p:menuitem value="Descargar archivos CVA"
+							url="/faces/security/ProductosEstructurados/descargaArchivoCVA.xhtml"></p:menuitem>
+					</p:submenu>
+				</p:column>
+			</p:submenu>
+
+			<p:submenu label="Renta Fija">
+				<p:column>
+					<p:submenu label="Renta Fija" icon="ui-icon-check">
+						<p:menuitem value="Tasas de Referencia"
+							url="/faces/security/RentaFija/indicadores.xhtml" />
+						<p:menuitem value="Historico Tasas"
+							url="/faces/security/RentaFija/historicoTasas.xhtml" />
+						<p:menuitem value="Historico Monedas"
+							url="/faces/security/RentaFija/historicoMonedas.xhtml" />
+						<p:menuitem value="Historico Precios"
+							url="/faces/security/RentaFija/historicoPrecios.xhtml" />
+						<p:menuitem value="Historico Puntos"
+							url="/faces/security/RentaFija/historicoPuntos.xhtml" />
+						<p:menuitem value="Histórico Por Índices"
+							url="/faces/security/RentaFija/historicoIndices.xhtml" />
+						<p:menuitem value="Tasas de Amortización"
+							url="/faces/security/RentaFija/tablasAmortizacion.xhtml"></p:menuitem>
+						<p:menuitem value="Histórico margen de valoracion"
+							url="/faces/security/RentaFija/historicoMargenValoracion.xhtml" />
+						<p:menuitem value="Consulta nemotecnicos"
+							url="/faces/security/RentaFija/consultaNemotecnicos.xhtml" />
+						<p:menuitem value="Consulta Calificaciones"
+							url="/faces/security/RentaFija/consultaCalificaciones.xhtml" />
+						<p:menuitem value="Historico por Betas"
+							url="/faces/security/RentaFija/historicoBetas.xhtml" />
+						<p:menuitem value="Archivo Valoración Renta Fija Local"
+							url="/faces/security/RentaFija/archivosValoracionRentaFija.xhtml" />
+						<p:menuitem value="Archivo Valoración Internacional Renta Fija"
+							url="/faces/security/RentaFija/archivosValoracionInternacionales.xhtml" />
+						<p:menuitem value="Descarga de Archivos Nemos e Isines"
+							url="/faces/security/RentaFija/archivosNemosIsines.xhtml" />
+					</p:submenu>
+				</p:column>
+			</p:submenu>
+			<p:submenu label="Renta Variable">
+				<p:column>
+					<p:submenu label="Renta Variable" icon="ui-icon-check">
+						<p:menuitem value="Archivos Valoración"
+							url="/faces/security/RentaVariable/archivosValoracionLocal.xhtml" />
+						<p:menuitem value="Archivos Valoración Internacional"
+							url="/faces/security/RentaVariable/archivosValoracionInt.xhtml" />
+						<p:menuitem value="Consulta historica de acciones"
+							url="/faces/security/RentaVariable/historicoAcciones.xhtml" />
+						<p:menuitem value="Consulta acciones diarias"
+							url="/faces/security/RentaVariable/accionesDiarias.xhtml" />
+						<p:menuitem value="Base de datos especializada"
+							url="/faces/security/RentaVariable\basededatosespecializada.xhtml" />
+
+					</p:submenu>
+				</p:column>
+			</p:submenu>
+
+		</p:megaMenu>
+		<br />
+		<br />
+	</h:form>
+</h:body>
+</html>

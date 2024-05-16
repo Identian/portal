@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Renta Fija</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:fieldset legend="Archivos Renta Fija Internacional">
+					<p:messages autoUpdate="true" closable="true" showDetail="false" />
+					<p:panelGrid columns="2" layout="grid">
+						<p:outputLabel value="Fecha:" />
+						<p:calendar pattern="yyyy-MM-dd" locale="es" navigator="true"
+							mode="inline" showOn="button" required="true"
+							requiredMessage="La fecha final es requerida"
+							mindate="#{ArchivoValoracionInternacionalesController.minimoFechaInicial}"
+							value="#{ArchivoValoracionInternacionalesController.fechaFinal}">
+							<p:ajax event="dateSelect"
+								listener="#{ArchivoValoracionInternacionalesController.consultaArchivos}"
+								update="form" />
+						</p:calendar>
+					</p:panelGrid>
+					<br />
+
+					<p:dataTable id="TablaValoracionInternacional" resizeMode="expand"
+						liveResize="true" reflow="true" rows="10" paginator="true"
+						rowsPerPageTemplate="5,10" rowHover="true"
+						value="#{ArchivoValoracionInternacionalesController.archivosList}"
+						var="archivo" emptyMessage="#{msg['TABLA_VACIA']}">
+						<p:column headerText="Archivo Valoración Internacional">
+							<p:outputLabel value="#{archivo.nombre}"></p:outputLabel>
+						</p:column>
+						<p:column headerText="Descargar">
+							<center>
+								<h:commandLink
+									action="#{ArchivoValoracionInternacionalesController.descargaArchivo(archivo)}">
+									<h:graphicImage value="/resources/img/descargar.png"
+										title="Descargar archivo" styleClass="tamanoImagen" />
+								</h:commandLink>
+							</center>
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

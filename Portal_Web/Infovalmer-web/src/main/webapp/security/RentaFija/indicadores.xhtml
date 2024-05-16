@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Indicadores</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form target="_parent">
+				<p:tabView onTabChange="aiExecuteWorkaround_advanced_iframe();"
+					onTabShow="aiExecuteWorkaround_advanced_iframe();"
+					onTabClose="aiExecuteWorkaround_advanced_iframe();">
+					<p:tab title="Tasa de referencia" id="tabTasas">
+						<p:dataTable id="tablaTasas" rowHover="true"
+							value="#{rentaFijaIndicadoresController.listValorTasa}"
+							var="valorTasa" emptyMessage="#{msg['TABLA_VACIA']}">
+
+							<p:column headerText="Tasa" sortBy="#{valorTasa.cTipotasa}"
+								filterBy="#{valorTasa.cTipotasa}" filterMatchMode="contains">
+								<h:outputLink
+									value="#{rentaFijaIndicadoresController.ipAdminContenido}/index.php/renta-fija/"
+									target="_parent">
+							#{valorTasa.cTipotasa}
+							<f:param id="tasa" name="tasa" value="#{valorTasa.cTipotasa}"></f:param>
+								</h:outputLink>
+							</p:column>
+
+							<p:column headerText="Valor" sortBy="#{valorTasa.eValortasa}"
+								filterBy="#{valorTasa.eValortasa}" filterMatchMode="contains">
+								<div align="right">
+									<h:outputText value="#{valorTasa.eValortasa}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+									</h:outputText>
+
+								</div>
+
+							</p:column>
+
+							<p:column headerText="Variación" sortBy="#{valorTasa.variacion}"
+								filterBy="#{valorTasa.variacion}" filterMatchMode="contains">
+								<div align="right">
+									<p:graphicImage value="/resources/img/#{valorTasa.imagen}"
+										styleClass="tamanoImagen"></p:graphicImage>
+									<div style="margin-right: 10px; display: inline-block;"></div>
+									<p:outputLabel value="#{valorTasa.variacion}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+									</p:outputLabel>
+								</div>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+					<p:tab title="Monedas" id="tabMonedas">
+						<p:dataTable id="tablaMonedas" rowHover="true"
+							value="#{rentaFijaIndicadoresController.listValorMonedas}"
+							var="valorMoneda" emptyMessage="#{msg['TABLA_VACIA']}">
+
+							<p:column headerText="Moneda" sortBy="#{valorMoneda.cTipomoneda}"
+								filterBy="#{valorMoneda.cTipomoneda}" filterMatchMode="contains">
+								<h:outputLink
+									value="#{rentaFijaIndicadoresController.ipAdminContenido}/index.php/renta-fija/"
+									target="_parent">
+									#{valorMoneda.cTipomoneda}
+									<f:param id="moneda" name="moneda"
+										value="#{valorMoneda.cTipomoneda}"></f:param>
+								</h:outputLink>
+							</p:column>
+
+							<p:column headerText="Valor" sortBy="#{valorMoneda.eValormoneda}"
+								filterBy="#{valorMoneda.eValormoneda}"
+								filterMatchMode="contains">
+								<div align="right">
+									<h:outputText value="#{valorMoneda.eValormoneda}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+									</h:outputText>
+								</div>
+							</p:column>
+
+							<p:column headerText="Variación"
+								sortBy="#{valorMoneda.variacion}"
+								filterBy="#{valorMoneda.variacion}" filterMatchMode="contains">
+								<div align="right">
+									<p:graphicImage value="/resources/img/#{valorMoneda.imagen}"
+										styleClass="tamanoImagen"></p:graphicImage>
+									<div style="margin-right: 10px; display: inline-block;"></div>
+									<p:outputLabel value="#{valorMoneda.variacion}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+									</p:outputLabel>
+								</div>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+					<p:tab title="TES" id="tabTes">
+						<p>Los precios están sujetos a cambios en caso de presentarse
+							impugnaciones.</p>
+						<p:dataTable id="tableTes" rowHover="true"
+							value="#{rentaFijaIndicadoresController.listValorTitulos}"
+							var="valorTitulo" emptyMessage="#{msg['TABLA_VACIA']}">
+							<p:column headerText="Nemotécnico"
+								sortBy="#{valorTitulo.cNemotecnico}"
+								filterBy="#{valorTitulo.cNemotecnico}"
+								filterMatchMode="contains">
+								<h:outputLink
+									value="#{rentaFijaIndicadoresController.ipAdminContenido}/index.php/renta-fija/"
+									target="_parent">
+									 #{valorTitulo.cNemotecnico}
+									<f:param id="nemo" name="nemo"
+										value="#{valorTitulo.cNemotecnico}"></f:param>
+								</h:outputLink>
+							</p:column>
+
+							<p:column headerText="Precio limpio"
+								sortBy="#{valorTitulo.ePreciolimpio}"
+								filterBy="#{valorTitulo.ePreciolimpio}"
+								filterMatchMode="contains">
+								<div align="right">
+									<h:outputText value="#{valorTitulo.ePreciolimpio}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+									</h:outputText>
+								</div>
+							</p:column>
+
+							<p:column headerText="TIR" sortBy="#{valorTitulo.eTir}"
+								filterBy="#{valorTitulo.eTir}" filterMatchMode="contains">
+								<div align="right">
+									<h:outputText value="#{valorTitulo.eTir}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+									</h:outputText>
+								</div>
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

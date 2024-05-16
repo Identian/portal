@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+	<script type="text/javascript" src="#{propiedadesGenerales.jsIframe}"></script>
+</h:head>
+<h:body>
+	<!-- 	<div> -->
+	<!-- 		<ui:insert name="Header"> -->
+	<!-- 			<ui:include src="menu.xhtml"></ui:include> -->
+	<!-- 		</ui:insert> -->
+	<!-- 	</div> -->
+	<div>
+		<ui:insert name="content">
+		</ui:insert>
+	</div>
+	<div>
+		<ui:insert name="loading">
+			<ui:include src="cargando.xhtml"></ui:include>
+		</ui:insert>
+	</div>
+</h:body>
+</html>

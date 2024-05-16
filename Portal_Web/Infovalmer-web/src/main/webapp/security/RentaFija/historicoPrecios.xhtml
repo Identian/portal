@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Histórico de Precios</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formHistoricoPrecios">
+				<p:fieldset legend="Históricos por Precios">
+					<p:outputLabel
+						value="Necesario para mostrar el message cuando se redirecciona desde pagina de Indicadores"
+						rendered="#{historicoPreciosController.viewMessage}"></p:outputLabel>
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="2" layout="grid" id="panelSelectTipo"
+							styleClass="ui-panelgrid-blank">
+							<p:outputLabel for="emisor" value="Emisor:" />
+							<p:selectOneMenu id="emisor" filter="true"
+								filterMatchMode="contains"
+								value="#{historicoPreciosController.histPrecioVista.emisor}">
+								<p:ajax
+									listener="#{historicoPreciosController.consultarTasasPorEmisor}"
+									update="tasa" />
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{historicoPreciosController.listEmisores}"
+									var="itemEmisor" itemLabel="#{itemEmisor.CNombre}"
+									itemValue="#{itemEmisor.CEmisor}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="tasa" value="Tasa:" />
+							<p:selectOneMenu id="tasa" filter="true"
+								filterMatchMode="contains"
+								value="#{historicoPreciosController.histPrecioVista.tipoTasa}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{historicoPreciosController.listaTipoTasa}"
+									var="itemTasa"
+									itemLabel="#{itemTasa.cTipotasa} - #{itemTasa.cDescripcion}"
+									itemValue="#{itemTasa.cTipotasa}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Nemotécnico: " for="nemotecnico" />
+							<p:autoComplete id="nemotecnico"
+								minQueryLength="#{historicoPreciosController.consultaMinimoCaracteres()}"
+								forceSelection="true"
+								maxResults="#{historicoPreciosController.consultaMaximoResultados()}"
+								value="#{historicoPreciosController.histPrecioVista.nemotecnico}"
+								completeMethod="#{historicoPreciosController.autocompletarNemo}"
+								effect="fade" scrollHeight="300">
+							</p:autoComplete>
+
+							<p:outputLabel value="ISIN: " for="isin" />
+							<p:autoComplete id="isin"
+								minQueryLength="#{historicoPreciosController.consultaMinimoCaracteres()}"
+								forceSelection="true"
+								maxResults="#{historicoPreciosController.consultaMaximoResultados()}"
+								value="#{historicoPreciosController.histPrecioVista.isin}"
+								completeMethod="#{historicoPreciosController.autocompletarIsin}"
+								effect="fade" scrollHeight="300" />
+
+						</p:panelGrid>
+					</div>
+					<p:panelGrid columns="2" layout="grid" id="panelFechas"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="fechaIni" value="Fecha Inicial:" />
+						<p:calendar id="fechaIni" showOn="button"
+							mindate="#{historicoPreciosController.minimoFechaInicial}"
+							value="#{historicoPreciosController.histPrecioVista.fechaInicial}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							requiredMessage="#{msg['FECHA_INICIAL_E1']}">
+							<p:ajax event="dateSelect" update="fechaFin" />
+						</p:calendar>
+						<p:outputLabel for="fechaFin" value="Fecha Final:" />
+						<p:calendar id="fechaFin" showOn="button"
+							value="#{historicoPreciosController.histPrecioVista.fechaFinal}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							mindate="#{historicoPreciosController.histPrecioVista.fechaInicial}"
+							requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+					</p:panelGrid>
+
+					<br />
+					<div align="center">
+						<p:commandButton value="Buscar" process="@form"
+							actionListener="#{historicoPreciosController.consultarHistoricoPrecios}"
+							update=":formHistoricoPrecios"></p:commandButton>
+
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							actionListener="#{historicoPreciosController.limpiarCampos('historicoPreciosController')}"
+							update=":formHistoricoPrecios">
+						</p:commandButton>
+					</div>
+					<br />
+
+					<p:fieldset
+						rendered="#{historicoPreciosController.viewGraficaTabla}">
+						<p:chart type="line"
+							model="#{historicoPreciosController.graficaHistoricoPrecios}"
+							responsive="true" widgetVar="graficaPecios" />
+						<br />
+						<p:panelGrid style="width:100%">
+							<p:row>
+								<p:column style="width:50%">
+									<center>
+										<p:commandButton type="button"
+											value="#{msg['RESTABLECER_GRAFICA_NOMBRE']}"
+											icon="ui-icon-cancel"
+											onclick="PF('graficaPecios').resetZoom()" />
+									</center>
+								</p:column>
+								<p:column style="width:50%">
+									<center>
+										<h:commandLink
+											rendered="#{historicoPreciosController.viewGraficaTabla}"
+											ajax="false"
+											actionListener="#{historicoPreciosController.descargarCsv()}">
+											<h:graphicImage value="/resources/img/descargar.png"
+												title="Descargar archivo CSV" styleClass="tamanoImagen" />
+										</h:commandLink>
+									</center>
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:fieldset>
+					<br />
+					<p:fieldset
+						rendered="#{historicoPreciosController.viewGraficaTabla}">
+						<p:dataTable
+							value="#{historicoPreciosController.precioPromediolazyModel}"
+							var="precioPro" id="tblPrecios" resizeMode="expand" 
+							liveResize="true" reflow="true" rows="10" paginator="true"
+							rowHover="true" rowsPerPageTemplate="5,10"
+							emptyMessage="#{msg['TABLA_VACIA']}" lazy="true">
+
+							<p:column headerText="Fecha" sortBy="#{precioPro.dFecharegistro}">
+								<h:outputText value="#{precioPro.dFecharegistro}" />
+							</p:column>
+							<p:column headerText="Fecha Emisión"
+								sortBy="#{precioPro.dFechaemistit}">
+								<h:outputText value="#{precioPro.dFechaemistit}" />
+							</p:column>
+							<p:column headerText="Fecha Vencimiento"
+								sortBy="#{precioPro.dFechavenctit}">
+								<h:outputText value="#{precioPro.dFechavenctit}" />
+							</p:column>
+							<p:column headerText="Cupón" sortBy="#{precioPro.eSpread}">
+								<div align="right">
+									<h:outputText value="#{precioPro.eSpread}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+									</h:outputText>
+								</div>
+							</p:column>
+							<p:column headerText="Modalidad"
+								sortBy="#{precioPro.cPeriodmodali}">
+								<h:outputText value="#{precioPro.cPeriodmodali}" />
+							</p:column>
+							<p:column headerText="Precio Sucio"
+								sortBy="#{precioPro.ePreciopromedio}">
+								<div align="right">
+									<h:outputText value="#{precioPro.ePreciopromedio}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+
+									</h:outputText>
+								</div>
+							</p:column>
+							<p:column headerText="Tipo Precio"
+								sortBy="#{precioPro.iTipocalculo}">
+								<h:outputText value="#{precioPro.iTipocalculo}" />
+							</p:column>
+							<p:column headerText="Precio Limpio"
+								sortBy="#{precioPro.ePreciolimpio}">
+								<div align="right">
+									<h:outputText value="#{precioPro.ePreciolimpio}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+
+									</h:outputText>
+								</div>
+							</p:column>
+							<p:column headerText="Margen Equivalente"
+								sortBy="#{precioPro.eMargenequivalente}">
+								<div align="right">
+									<h:outputText value="#{precioPro.eMargenequivalente}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+
+									</h:outputText>
+								</div>
+							</p:column>
+							<p:column headerText="TIR" sortBy="#{precioPro.eTir}">
+								<div align="right">
+									<h:outputText value="#{precioPro.eTir}">
+										<f:convertNumber
+											minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+											maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+
+									</h:outputText>
+								</div>
+							</p:column>
+							<p:column headerText="ISIN" sortBy="#{precioPro.cIsin}">
+								<h:outputText value="#{precioPro.cIsin}" />
+							</p:column>
+							<p:column headerText="Nemotécnico" sortBy="#{precioPro.cNemotecnico}" style="width: 85px" >
+								<h:outputText value="#{precioPro.cNemotecnico}" style="width: 85px"/>
+							</p:column>
+						</p:dataTable>
+					</p:fieldset>
+
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

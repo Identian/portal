@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Base de Datos Especializada.</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:fieldset legend="Base de Datos Especializada">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<br />
+					<p:dataTable id="tablaArchivos" resizeMode="expand"
+						liveResize="true" reflow="true" rows="10" paginator="true"
+						rowsPerPageTemplate="5,10" rowHover="true"
+						value="#{dbespecializadaController.listaArchivos}"
+						emptyMessage="#{msg['TABLA_VACIA']}" var="archivo">
+
+						<p:column headerText="Archivo de valoración">
+							<center>
+								<h:outputText value="Isines y Nemotécnicos" />
+							</center>
+						</p:column>
+
+						<p:column headerText="Descargar">
+							<center>
+								<p:commandLink ajax="false"
+									actionListener="#{dbespecializadaController.descargarArchivo(archivo)}">
+									<h:graphicImage value="/resources/img/descargar.png"
+										title="Descargar archivo CSV" styleClass="tamanoImagen" />
+									<p:fileDownload value="#{dbespecializadaController.file}" />
+								</p:commandLink>
+							</center>
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

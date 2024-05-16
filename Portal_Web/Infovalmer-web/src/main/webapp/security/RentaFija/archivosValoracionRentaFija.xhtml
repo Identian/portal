@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Archivos de Valoración Renta Fija Local</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+
+				<p:fieldset legend="Archivos Renta Fija Local">
+					<p:messages autoUpdate="true" closable="true" showDetail="false" />
+					<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+						layout="grid">
+						<p:outputLabel value="Fecha: " />
+						<p:calendar pattern="yyyy-MM-dd" locale="es" navigator="true"
+							showOn="button" required="true" mode="inline"
+							requiredMessage="La fecha final es requerida"
+							mindate="#{ArchivoValoracionRentaFija.minimoFechaInicial}"
+							value="#{ArchivoValoracionRentaFija.fechaFinal}">
+							<p:ajax event="dateSelect"
+								listener="#{ArchivoValoracionRentaFija.consultaArchivos}"
+								update="form" />
+						</p:calendar>
+					</p:panelGrid>
+					<br />
+
+					<p:commandButton value="Descargar seleccionados"
+						rendered="#{ArchivoValoracionRentaFija.mostrarLink}"
+						action="#{ArchivoValoracionRentaFija.descargarArchivoZip}"
+						update=":formDescargaOtc:msg" ajax="false">
+						<f:setPropertyActionListener
+							target="#{ArchivoValoracionRentaFija.parametro}"
+							value="SELECCIONADOS" />
+					</p:commandButton>
+
+					<br />
+
+					<p:dataTable id="TablaValoracionRentaFija" resizeMode="expand"
+						liveResize="true" reflow="true" rows="10" paginator="true"
+						rowsPerPageTemplate="5,10" rowHover="true"
+						value="#{ArchivoValoracionRentaFija.archivosList}" var="archivo"
+						selection="#{ArchivoValoracionRentaFija.archivosSeleccionados}"
+						rowKey="#{archivo.nombre}" emptyMessage="#{msg['TABLA_VACIA']}">
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
+						<p:column headerText="Archivo de valoración">
+							<p:outputLabel value="#{archivo.nombre}"></p:outputLabel>
+						</p:column>
+						<p:column headerText="Descarga">
+							<div align="center">
+								<h:commandLink
+									action="#{ArchivoValoracionRentaFija.descargaArchivo(archivo)}">
+									<h:graphicImage value="/resources/img/descargar.png"
+										title="Descargar archivo" styleClass="tamanoImagen" />
+								</h:commandLink>
+							</div>
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

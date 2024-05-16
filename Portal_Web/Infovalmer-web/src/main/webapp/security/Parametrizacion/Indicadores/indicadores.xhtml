@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Parametrización de Indicadores</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formGeneral">
+				<p:fieldset legend="Parametrización de Indicadores">
+					<p:panelGrid columns="2" layout="grid" id="PanelParametrias">
+						<p:outputLabel value="TES"></p:outputLabel>
+						<p:commandButton value="Parametrizar"
+							onclick="PF('dlgTes').show();"
+							actionListener="#{indicadoresController.consultarTitulos()}"
+							update=":formTES:panelTitulos"></p:commandButton>
+
+						<p:outputLabel value="Monedas"></p:outputLabel>
+						<p:commandButton value="Parametrizar"
+							onclick="PF('dlgMoneda').show();"
+							actionListener="#{indicadoresController.consultarMonedas()}"
+							update=":formMonedas:pickListMonedas"></p:commandButton>
+
+						<p:outputLabel value="Tasa de referencia"></p:outputLabel>
+						<p:commandButton value="Parametrizar"
+							onclick="PF('dlgTasa').show();"
+							actionListener="#{indicadoresController.consultarTasas()}"
+							update=":formTasa:pickListTasa"></p:commandButton>
+
+						<p:outputLabel value="Insumos"></p:outputLabel>
+						<p:commandButton value="Parametrizar"
+							onclick="PF('dlgInsumos').show();"
+							actionListener="#{indicadoresController.consultarInsumos()}"
+							update=":formInsumos:pickListInsumos"></p:commandButton>
+					</p:panelGrid>					
+				</p:fieldset>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+			</h:form>
+
+			<h:form id="formTES">
+				<div align="center">
+					<p:dialog header="Parametrizacion TES" widgetVar="dlgTes"
+						responsive="true" id="dlgParametriaTes" resizable="false"
+						draggable="true" closable="true">
+						<p:messages layout="table" closable="true" autoUpdate="true" />
+						<p:panel id="panelTitulos" header="Parametrización Títulos" responsive="true" >
+							<p:pickList id="pickListTitulos" responsive="true"
+								value="#{indicadoresController.generalDualTitulos}"
+								var="generalTitulos" itemLabel="#{generalTitulos.cNemotecnico}"
+								itemValue="#{generalTitulos}" converter="tituloConverter"
+								showSourceFilter="true" filterMatchMode="contains">
+								<p:ajax event="transfer"
+									listener="#{indicadoresController.validarListaTitulos()}"
+									update=":formTES:panelTitulos" />
+							</p:pickList>
+							<br />
+							<p:commandButton value="Guardar" process="@form"
+								update=":formTES:panelTitulos"
+								actionListener="#{indicadoresController.actualizarTitulos()}"></p:commandButton>
+							<p:commandButton value="Cancelar" process="@this"
+								onclick="PF('dlgTes').hide();eliminarFondoDialog();"></p:commandButton>
+						</p:panel>
+
+					</p:dialog>
+				</div>
+			</h:form>
+
+			<h:form id="formMonedas">
+				<div align="center">
+					<p:dialog header="Parametrizacion Monedas" widgetVar="dlgMoneda"
+						responsive="true" id="dlgParametriaMoneda" resizable="false"
+						draggable="true" closable="true">
+						<p:messages id="msg" layout="table" closable="true"
+							autoUpdate="true" />
+						<p:panel id="panelMonedas" header="Parametrización Monedas">
+							<p:pickList id="pickListMonedas" responsive="true"
+								value="#{indicadoresController.generalDualMonedas}"
+								var="generalDualMonedas"
+								itemLabel="#{generalDualMonedas.cTipomoneda}"
+								itemValue="#{generalDualMonedas}"
+								converter="tipoMonedaConverter" showSourceFilter="true"
+								filterMatchMode="contains">
+								<p:ajax event="transfer"
+									listener="#{indicadoresController.validarListaMonedas()}"
+									update=":formMonedas:panelMonedas" />
+							</p:pickList>
+							<br />
+							<p:commandButton value="Guardar"
+								actionListener="#{indicadoresController.actualizarMonedas()}"
+								process="@form" update=":formMonedas:panelMonedas"></p:commandButton>
+							<p:commandButton value="Cancelar" process="@this"
+								onclick="PF('dlgMoneda').hide(); eliminarFondoDialog();"></p:commandButton>
+						</p:panel>
+
+					</p:dialog>
+				</div>
+			</h:form>
+
+			<h:form id="formTasa">
+				<div align="center">
+					<p:dialog header="Parametrizacion Tasas de Referencia"
+						widgetVar="dlgTasa" responsive="true" id="dlgParametriaTasas"
+						resizable="false" draggable="true" closable="true">
+						<p:messages id="msg" layout="table" closable="true"
+							autoUpdate="true" />
+						<p:panel id="panelTasas" header="Parametrización Tasas">
+							<p:pickList id="pickListTasa" responsive="true"
+								value="#{indicadoresController.generalDualTasas}"
+								var="generalDualTasas" itemLabel="#{generalDualTasas.cTipotasa}"
+								itemValue="#{generalDualTasas}" converter="tipoTasaConverter"
+								showSourceFilter="true" filterMatchMode="contains">
+								<p:ajax event="transfer"
+									listener="#{indicadoresController.validarListaTasa()}"
+									update=":formTasa:panelTasas" />
+							</p:pickList>
+						</p:panel>
+						<br />
+						<p:commandButton value="Guardar"
+							actionListener="#{indicadoresController.actualizarTasas()}"
+							process="@form" update=":formTasa:panelTasas"></p:commandButton>
+						<p:commandButton value="Cancelar" process="@this"
+							onclick="PF('dlgTasa').hide();eliminarFondoDialog();"></p:commandButton>
+					</p:dialog>
+				</div>
+			</h:form>
+
+			<h:form id="formInsumos">
+				<div align="center">
+					<p:dialog header="Parametrización Insumos" widgetVar="dlgInsumos"
+						responsive="true" id="dlgParametriaInsumos" resizable="false"
+						draggable="true" closable="true">
+						<p:messages id="msg" layout="table" closable="true"
+							autoUpdate="true" />
+						<p:panel id="panelInsumos" header="Parametrización Insumos">
+							<p:pickList id="pickListInsumos" responsive="true"
+								value="#{indicadoresController.generalDualInsumos}"
+								var="generalDualInsumos"
+								itemLabel="#{generalDualInsumos.cNombre}"
+								itemValue="#{generalDualInsumos}"
+								converter="tipoCurvaConverterDualList" showSourceFilter="true"
+								filterMatchMode="contains">
+								<p:ajax event="transfer"
+									listener="#{indicadoresController.validarListaInsumos()}"
+									update=":formInsumos:panelInsumos" />
+							</p:pickList>
+						</p:panel>
+						<br />
+						<p:commandButton value="Guardar"
+							actionListener="#{indicadoresController.actualizarInsumos()}"
+							process="@form" update=":formInsumos:panelInsumos"></p:commandButton>
+						<p:commandButton value="Cancelar" process="@this"
+							onclick="PF('dlgInsumos').hide();eliminarFondoDialog();"></p:commandButton>
+					</p:dialog>
+				</div>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

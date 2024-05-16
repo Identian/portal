@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Consulta Derivados</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formNemotecnico">
+
+				<p:fieldset legend="Consulta Nemotécnico">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="2" layout="grid" id="panelSelectTipo"
+							styleClass="ui-panelgrid-blank">
+							<p:outputLabel for="emisor" value="Emisor:"></p:outputLabel>
+							<p:selectOneMenu id="emisor" filter="true"
+								filterMatchMode="contains" required="true"
+								value="#{nemotecnicosController.filtroNemoDto.cEmisor}">
+								<p:ajax listener="#{nemotecnicosController.consultarTasa()}"
+									update="panelSelectTipo" process="@parent"></p:ajax>
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems value="#{nemotecnicosController.listItemsEmisor}"
+									var="emisor" itemLabel="#{emisor.CNombre}"
+									itemValue="#{emisor.CEmisor}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="tasa" value="Tasa:"></p:outputLabel>
+							<p:selectOneMenu id="tasa" filter="true"
+								filterMatchMode="contains"
+								value="#{nemotecnicosController.filtroNemoDto.cTipoTasa}">
+								<p:ajax listener="#{nemotecnicosController.listarNemo()}"
+									update="panelSelectTipo" process="@parent"></p:ajax>
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems value="#{nemotecnicosController.listItemsTasa}"
+									var="tasa"
+									itemLabel="#{tasa.cTipotasa}  -  #{tasa.cDescripcion}"
+									itemValue="#{tasa.cTipotasa}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="nemo" value="Nemotécnico:"></p:outputLabel>
+							<p:selectOneMenu id="nemo" filter="true"
+								filterMatchMode="contains"
+								value="#{nemotecnicosController.filtroNemoDto.cNemotecnico}">
+								<p:ajax listener="#{nemotecnicosController.consultarIsin()}"
+									update="panelSelectTipo" process="@parent"></p:ajax>
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems value="#{nemotecnicosController.listNemo}"
+									var="nemo" itemLabel="#{nemo.cNemotecnico}"
+									itemValue="#{nemo.cNemotecnico}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="isin" value="ISIN:"></p:outputLabel>
+							<p:selectOneMenu id="isin" filter="true"
+								filterMatchMode="contains"
+								value="#{nemotecnicosController.filtroNemoDto.cIsin}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems value="#{nemotecnicosController.listItemsIsin}"
+									var="isin" itemLabel="#{isin.CIsin}" itemValue="#{isin.CIsin}"></f:selectItems>
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</div>
+					<br />
+					<div align="center">
+						<p:commandButton id="btnBuscar" value="Buscar"
+							update=":formNemotecnico,tablaNemotecnicos"
+							actionListener="#{nemotecnicosController.consultarNemo()}"
+							process="@form"></p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							actionListener="#{nemotecnicosController.limpiarCampos('nemotecnicosController')}"
+							update=":formNemotecnico">
+						</p:commandButton>
+					</div>
+				</p:fieldset>
+
+				<br />
+				<p:fieldset rendered="#{nemotecnicosController.viewTabla}">
+					<div align="center">
+						<p:commandLink ajax="false"
+							actionListener="#{nemotecnicosController.generarCsv}">
+							<h:graphicImage value="/resources/img/descargar.png"
+								title="Descargar archivo CSV" styleClass="tamanoImagen" />
+							<p:fileDownload value="#{nemotecnicosController.file}" />
+						</p:commandLink>
+					</div>
+					<br />
+					<p:dataTable id="tablaNemotecnicos" var="nemotec" lazy="true"
+						resizeMode="expand" liveResize="true" reflow="true" rows="10"
+						paginator="true" rowsPerPageTemplate="5,10"
+						tableStyle="width.auto" rowHover="true"
+						value="#{nemotecnicosController.lazyConsultaNemotecnicos}">
+
+						<p:column headerText="Emisor" sortBy="#{nemotec.cEmisor}">
+							<h:outputText value="#{nemotec.cEmisor}" />
+						</p:column>
+
+						<p:column headerText="Nemotécnico"
+							sortBy="#{nemotec.cNemotecnico}">
+							<h:outputText value="#{nemotec.cNemotecnico}" />
+						</p:column>
+
+						<p:column headerText="ISIN" sortBy="#{nemotec.cCodisin1}">
+							<h:outputText value="#{nemotec.cCodisin1}" />
+						</p:column>
+
+						<p:column headerText="Fecha de emisión"
+							sortBy="#{nemotec.dFechaemision}">
+							<h:outputText value="#{nemotec.dFechaemision}" />
+						</p:column>
+
+						<p:column headerText="Fecha de vencimiento"
+							sortBy="#{nemotec.dFechavencimiento}">
+							<h:outputText value="#{nemotec.dFechavencimiento}" />
+						</p:column>
+
+						<p:column headerText="Cupón" sortBy="#{nemotec.cCurvacerocupon}">
+							<h:outputText value="#{nemotec.eTasa}" />
+						</p:column>
+
+						<p:column headerText="Periodicidad"
+							sortBy="#{nemotec.cPeriodicidad}">
+							<h:outputText value="#{nemotec.cModalidad}" />
+						</p:column>
+
+						<p:column headerText="Base" sortBy="#{nemotec.cBaseint}">
+							<h:outputText value="#{nemotec.cBaseint}" />
+						</p:column>
+
+						<p:column headerText="Tasa" sortBy="#{nemotec.eTasa}">
+							<div align="right">
+								<h:outputText value="#{nemotec.cTasareferencia}">
+									<f:convertNumber
+										minFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}"
+										maxFractionDigits="#{rentaFijaIndicadoresController.consultaMaximoDecimales()}" />
+								</h:outputText>
+							</div>
+						</p:column>
+
+						<p:column headerText="Uso tasa " sortBy="#{nemotec.cUsotasa}">
+							<h:outputText value="#{nemotec.cUsotasa}" />
+						</p:column>
+
+						<p:column headerText="Moneda" sortBy="#{nemotec.cTipomoneda}">
+							<h:outputText value="#{nemotec.cTipomoneda}" />
+						</p:column>
+
+					</p:dataTable>
+					<br />
+
+
+				</p:fieldset>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

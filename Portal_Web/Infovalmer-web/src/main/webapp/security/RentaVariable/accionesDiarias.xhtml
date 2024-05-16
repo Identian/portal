@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Consulta Diaria de acciones</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formHistoricoAcciones">
+				<p:fieldset legend="Consulta Diaria por Acciones">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="2" layout="grid" id="panelSelectTipo"
+							styleClass="ui-panelgrid-blank">
+							<p:outputLabel for="tipo" value="Tipo:" />
+							<p:selectOneMenu id="tipo" filter="true"
+								filterMatchMode="contains"
+								value="#{accionesController.historicoVista.tipoMercado}"
+								required="true"
+								requiredMessage="#{msg['SELECT_MENSAJE_GENERAL']}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems value="#{accionesController.listTipoMercado}" />
+								<p:ajax event="change"
+									listener="#{accionesController.consultaEmisor()}"
+									update=":formHistoricoAcciones:emisor, :formHistoricoAcciones:nemotecnico "></p:ajax>
+							</p:selectOneMenu>
+							<p:outputLabel for="emisor" value="Emisor:" />
+							<p:selectOneMenu id="emisor" filter="true"
+								filterMatchMode="contains"
+								value="#{accionesController.historicoVista.emisor}"
+								disabled="#{accionesController.habilitaEmisor}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems value="#{accionesController.emisorList}"
+									var="emisor" itemLabel="#{emisor.CRazonsocial}"
+									itemValue="#{emisor.CEmisor}" />
+								<p:ajax event="change"
+									update=":formHistoricoAcciones:nemotecnico"></p:ajax>
+							</p:selectOneMenu>
+							<p:outputLabel for="nemotecnico" value="Nemotécnico: "></p:outputLabel>
+							<p:autoComplete id="nemotecnico"
+								minQueryLength="#{accionesController.consultaMinimoCaracteres()}"
+								forceSelection="true"
+								maxResults="#{accionesController.consultaMaximoResultados()}"
+								value="#{accionesController.historicoVista.nemotecnico}"
+								disabled="#{accionesController.habilitaNemo}"
+								completeMethod="#{accionesController.autocompletarNemo}"
+								effect="fade" scrollHeight="300">
+							</p:autoComplete>
+						</p:panelGrid>
+					</div>
+					<br />
+					<div align="center">
+						<p:commandButton id="btnBuscar" value="Buscar"
+							actionListener="#{accionesController.consultarHistoricoPrecios()}"
+							update=":formHistoricoAcciones" process="@form">
+							<f:param id="tipoVista" name="tipoVista" value="DIARIA"></f:param>
+						</p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar" process="@this"
+							update=":formHistoricoAcciones"
+							actionListener="#{accionesController.limpiarCampos('accionesController')}">
+						</p:commandButton>
+					</div>
+				</p:fieldset>
+				<br />
+				<p:fieldset rendered="#{accionesController.verGrafica}">
+
+					<p:panelGrid layout="grid" columns="2">
+						<p:outputLabel value="Precio valoración vigente: "
+							for="valoracionVigente" />
+						<p:outputLabel id="valoracionVigente"
+							value="#{accionesController.listaHistoricoAcciones.get(0).vaPrecioValoracionDto.ePreciovaloracion}"></p:outputLabel>
+
+						<p:outputLabel value="Precio valoración anterior: "
+							for="valoracionAnterior" />
+						<p:outputLabel id="valoracionAnterior"
+							value="#{accionesController.listaHistoricoAcciones.get(0).vaPrecioValoracionDto.ePrecioanterior}"></p:outputLabel>
+
+						<p:outputLabel value="Variación: " for="variacion" />
+						<p:outputLabel id="variacion"
+							value="#{accionesController.listaHistoricoAcciones.get(0).vaPrecioValoracionDto.eVariacion}"></p:outputLabel>
+
+						<p:outputLabel value="Frecuencia cotización: "
+							for="frecuenciaCoti" />
+						<p:outputLabel id="frecuenciaCoti"
+							value="#{accionesController.listaHistoricoAcciones.get(0).vaIndicadores.eFrecuencia}"></p:outputLabel>
+
+						<p:outputLabel value="Volumen 1 día: " for="volumen" />
+						<p:outputLabel id="volumen"
+							value="#{accionesController.listaHistoricoAcciones.get(0).vaPrecioValoracionDto.cVolumen}"></p:outputLabel>
+
+						<p:outputLabel value="Bursatilidad: " for="bursatilidad" />
+						<p:outputLabel id="bursatilidad"
+							value="#{accionesController.listaHistoricoAcciones.get(0).vaPrecioValoracionDto.cBursatilidad}"></p:outputLabel>
+
+						<p:outputLabel value="Capitalización bursátil: " for="capBurstail" />
+						<p:outputLabel id="capBurstail"
+							value="#{accionesController.listaHistoricoAcciones.get(0).vaIndicadores.eCapitalizacion}"></p:outputLabel>
+
+						<p:outputLabel value="Liquidez bursátil %: " for="liqBurstail" />
+						<p:outputLabel id="liqBurstail"
+							value="#{accionesController.listaHistoricoAcciones.get(0).vaIndicadores.eLiquidez}"></p:outputLabel>
+
+						<p:outputLabel value="Q de tobin: " for="tobin" />
+						<p:outputLabel id="tobin"
+							value="#{accionesController.listaHistoricoAcciones.get(0).vaIndicadores.eTobin}"></p:outputLabel>
+
+					</p:panelGrid>
+					<br />
+					<p:chart type="line"
+						model="#{accionesController.graficaHistoricoAcciones}"
+						responsive="true" widgetVar="graficaDerivados" />
+				</p:fieldset>
+
+				<p:fieldset rendered="#{accionesController.verDescargaCsv}">
+					<p:panelGrid style="width:100%">
+						<f:facet name="header">
+							<p:row>
+								<p:column>Archivo</p:column>
+								<p:column>Descargar</p:column>
+							</p:row>
+						</f:facet>
+						<p:row>
+							<p:column>Archivo Consulta Acciones</p:column>
+							<p:column>
+								<p:commandLink ajax="false"
+									actionListener="#{accionesController.generacionAccionesCSV()}">
+									<h:graphicImage value="/resources/img/descargar.png"
+										title="Descargar archivo CSV" styleClass="tamanoImagen" />
+									<p:fileDownload value="#{accionesController.archivo}" />
+								</p:commandLink>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

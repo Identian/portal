@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Consulta Derivados</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formDerivados">
+				<p:fieldset legend="Consulta Derivados">
+					<div class="ui-fluid">
+						<p:messages layout="table" closable="true" autoUpdate="true" />
+						<p:panelGrid columns="2" layout="grid" id="panelSelectTipo"
+							styleClass="ui-panelgrid-blank">
+							<p:outputLabel for="tipo" value="Tipo:"></p:outputLabel>
+							<p:selectOneMenu id="tipo"
+								value="#{derivadosController.derivadoDto.tipo}">
+								<p:ajax listener="#{derivadosController.disabledContratosNemo}"
+									update="panelSelectTipo" process="@parent"></p:ajax>
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItem itemLabel="Energético" itemValue="energetico"></f:selectItem>
+								<f:selectItem itemLabel="Financiero" itemValue="financiero"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="nemo" value="Nemo Subyacente:"></p:outputLabel>
+							<p:selectOneMenu id="nemo"
+								value="#{derivadosController.derivadoDto.nemoSubyacente}"
+								disabled="#{derivadosController.viewTipo}">
+								<p:ajax listener="#{derivadosController.disabledContratos}"
+									update="panelSelectTipo" process="@parent"></p:ajax>
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{derivadosController.listItemsTipoSubyacente}"></f:selectItems>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="contrato" value="Contrato:"></p:outputLabel>
+							<p:selectOneMenu id="contrato"
+								value="#{derivadosController.derivadoDto.contrato}"
+								disabled="#{derivadosController.viewTipoContrato}">
+								<f:selectItem itemLabel="#{msg['SELECT_OPCION']}" itemValue=""></f:selectItem>
+								<f:selectItems
+									value="#{derivadosController.listItemsTipoContrato}"></f:selectItems>
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+					</div>
+					<br />
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="ui-panelgrid-blank">
+
+						<p:outputLabel for="fechaIni" value="Fecha Inicial:" />
+						<p:calendar id="fechaIni"
+							mindate="#{derivadosController.minimoFechaInicial}"
+							value="#{derivadosController.derivadoDto.fechaInicial}"
+							showOn="button" pattern="yyyy-MM-dd" locale="es" navigator="true"
+							required="true" requiredMessage="#{msg['FECHA_INICIAL_E1']}">
+							<p:ajax event="dateSelect" update="fechaFin" process="@this" />
+						</p:calendar>
+						<p:outputLabel for="fechaFin" value="Fecha Final:" />
+						<p:calendar id="fechaFin"
+							mindate="#{derivadosController.derivadoDto.fechaInicial}"
+							value="#{derivadosController.derivadoDto.fechaFinal}"
+							showOn="button" pattern="yyyy-MM-dd" locale="es" navigator="true"
+							required="true" requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+					</p:panelGrid>
+
+					<br />
+					<center>
+						<p:commandButton id="btnBuscar" value="Buscar"
+							actionListener="#{derivadosController.consultaDerivados}"
+							update=":formDerivados" process="@form"></p:commandButton>
+						<p:commandButton id="btnLimpiar" value="Limpiar"
+							disabled="#{derivadosController.viewLimpiar}" process="@this"
+							actionListener="#{derivadosController.limpiarCampos('derivadosController')}"
+							update=":formDerivados">
+						</p:commandButton>
+					</center>
+				</p:fieldset>
+
+				<br />
+				<p:fieldset rendered="#{derivadosController.viewDescarga}">
+					<p:panelGrid id="gridDescarga" style="width:100%">
+						<f:facet name="header">
+							<p:row>
+								<p:column>Archivo</p:column>
+								<p:column>Descargar</p:column>
+							</p:row>
+						</f:facet>
+						<p:row>
+							<p:column>Archivo Consulta Derivados</p:column>
+							<p:column>
+
+
+								<p:commandLink ajax="false"
+									actionListener="#{derivadosController.generarCsv}">
+									<h:graphicImage value="/resources/img/descargar.png"
+										title="Descargar archivo CSV" styleClass="tamanoImagen" />
+									<p:fileDownload value="#{derivadosController.file}" />
+								</p:commandLink>
+
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:fieldset>
+				<br />
+				<p:fieldset rendered="#{derivadosController.viewGrafica}">
+					<p:chart type="line"
+						model="#{derivadosController.graficaDerivados}" responsive="true"
+						widgetVar="graficaDerivados" />
+					<br />
+					<br />
+					<p:commandButton type="button"
+						value="#{msg['RESTABLECER_GRAFICA_NOMBRE']}" icon="ui-icon-cancel"
+						onclick="PF('graficaDerivados').resetZoom()" />
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

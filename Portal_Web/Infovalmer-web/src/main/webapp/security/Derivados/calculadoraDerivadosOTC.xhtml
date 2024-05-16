@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Calculadora Derivados OTC</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formCalculadora">
+				<p:fieldset legend="Calculadoras Derivados OTC">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<p:dataTable resizableColumns="true" resizeMode="expand"
+						liveResize="true" reflow="true" rows="10" paginator="true"
+						rowsPerPageTemplate="5,10" rowHover="true"
+						value="#{calculadoraDerivadosOTCController.listaArchivos}"
+						emptyMessage="#{msg['TABLA_VACIA']}" var="archivo">
+
+						<p:column headerText="Archivo">
+							<h:outputText value="#{archivo.nombreMostar}" />
+						</p:column>
+
+						<p:column headerText="Descargar">
+							<center>
+								<h:commandLink
+									actionListener="#{calculadoraDerivadosOTCController.descargarArchivosZip(archivo)}">
+									<h:graphicImage value="/resources/img/descargar.png"
+										styleClass="tamanoImagen" />
+								</h:commandLink>
+							</center>
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Carga de archivo permisos OTC</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formCargarArchivosOTC">
+				<br />
+				<p:fieldset legend="Carga de archivo permisos OTC">
+					<p:growl id="messages" />
+					<p:fileUpload
+						fileUploadListener="#{permisosAgrupador.aplicarPermisos}"
+						sequential="true" mode="advanced" dragDropSupport="false"
+						multiple="false"
+						oncomplete="aiExecuteWorkaround_advanced_iframe();"
+						onstart="aiExecuteWorkaround_advanced_iframe();"
+						onerror="aiExecuteWorkaround_advanced_iframe();"
+						update=":formCargarArchivosOTC:tablaArchivosNoCargados :formCargarArchivosOTC:fieldCargados"
+						invalidFileMessage="El archivo debe tener la siguiente estructura descripcion_yyyymmdd.csv"
+						cancelLabel="Cancelar" uploadLabel="Cargar archivo"
+						label="Seleccionar archivo" process="@this"
+						allowTypes="/([0-9a-zA-Z_]+[_])((\d{4})([0][1-9]|[1][0-2])([0][1-9]|[12][0-9]|3[01]))(\.|\/)(csv)$/">
+					</p:fileUpload>
+
+				</p:fieldset>
+				<p:fieldset id="fieldCargados">
+					<br />
+					<p:dataTable id="tablaArchivosNoCargados" emptyMessage=""
+						rendered="#{permisosAgrupador.vistaTabla}" resizeMode="expand"
+						liveResize="true" reflow="true" rows="10" paginator="true"
+						rowsPerPageTemplate="5,10" rowHover="true"
+						value="#{permisosAgrupador.listaPermisosNoAplicado}" var="archivo">
+						<p:column headerText="Archivos no cargados">
+							<h:outputText value="#{archivo}" />
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

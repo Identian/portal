@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Consulta Productos Estructurados</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formConsultaProductos">
+				<p:fieldset legend="Consulta Productos Estructurados">
+					<p:outputLabel
+						value="Necesario para mostrar el message cuando se cargar el xhtml"
+						rendered="#{consultaProductosController.mensaje}"></p:outputLabel>
+					<p:messages autoUpdate="true" closable="true" />
+					<div align="left">
+						<p:panelGrid id="panelPrincipal" columns="2">
+							<p:outputLabel for="fechaIni" value="Fecha :" />
+							<p:calendar id="fechaIni"
+								mindate="#{consultaProductosController.minimoFechaInicial}"
+								value="#{consultaProductosController.fechaFinal}"
+								showOn="button" pattern="yyyy-MM-dd" locale="es"
+								navigator="true" required="true"
+								requiredMessage="#{msg['FECHA_INICIAL_E1']}">
+								<p:ajax event="dateSelect"
+									listener="#{consultaProductosController.consultaArchivos}"
+									update=":formConsultaProductos:tblConsultaProductos" />
+							</p:calendar>
+							<p:outputLabel>Usuario:</p:outputLabel>
+							<h:outputText
+								value="#{consultaProductosController.usuarioFinal.nombres}" />
+							<p:outputLabel>Perfil:</p:outputLabel>
+							<h:outputText
+								value="#{consultaProductosController.usuarioFinal.rol}" />
+							<p:outputLabel>NIT:</p:outputLabel>
+							<h:outputText
+								value="#{consultaProductosController.usuarioFinal.nit}" />
+						</p:panelGrid>
+					</div>
+					<br />
+					<p:dataTable id="tblConsultaProductos" resizeMode="expand"
+						liveResize="true" reflow="true" rows="10" paginator="true"
+						rowsPerPageTemplate="5,10" rowHover="true"
+						value="#{consultaProductosController.listaArchivos}"
+						var="Archivos" emptyMessage="#{msg['TABLA_VACIA']}">
+						<p:column headerText="Nombre Archivo" sortBy="#{Archivos.nombre}"
+							filterBy="#{Archivos.nombre}" filterMatchMode="contains">
+							<h:outputText value="#{Archivos.nombre}" />
+						</p:column>
+						<p:column headerText="Descargar">
+							<div align="center">
+								<h:commandLink
+									action="#{consultaProductosController.descargaArchivo(Archivos)}">
+									<h:graphicImage value="/resources/img/descargar.png"
+										title="Descargar archivo" styleClass="tamanoImagen" />
+								</h:commandLink>
+							</div>
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

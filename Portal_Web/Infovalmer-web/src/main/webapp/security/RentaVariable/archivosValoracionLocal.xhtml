@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Archivos de Valoración.</title>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formArchivosValoracion">
+				<p:fieldset legend="Achivos de Valoración">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="fechaFin" value="Fecha:" />
+						<p:calendar id="fechaFin" mode="inline"
+							value="#{archivosValoracionController.fechaFinal}"
+							showOn="button" pattern="yyyy-MM-dd" locale="es" navigator="true"
+							required="true" requiredMessage="#{msg['FECHA_FINAL_E2']}">
+							<p:ajax event="dateSelect"
+								listener="#{archivosValoracionController.consultarArchivosNaconales}"
+								update=":formArchivosValoracion:tablaArchivosValoracion" />
+						</p:calendar>
+					</p:panelGrid>
+					<br />
+					<p:dataTable id="tablaArchivosValoracion" resizeMode="expand"
+						liveResize="true" reflow="true" rows="10" paginator="true"
+						rowsPerPageTemplate="5,10" rowHover="true"
+						value="#{archivosValoracionController.listaArchivos}"
+						emptyMessage="#{msg['TABLA_VACIA']}" var="archivo">
+
+						<p:column headerText="Archivo" filterStyle="width:90%" sortBy="#{archivo.nombreMostar}"
+							filterBy="#{archivo.nombreMostar}" filterMatchMode="contains">
+							<h:outputText value="#{archivo.nombreMostar}" />
+						</p:column>
+
+						<p:column headerText="Descargar">
+							<center>
+								<h:commandLink
+									actionListener="#{archivosValoracionController.descargarArchivo(archivo)}">
+									<h:graphicImage value="/resources/img/descargar.png"
+										title="#{archivo.nombre}" styleClass="tamanoImagen" />
+								</h:commandLink>
+							</center>
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

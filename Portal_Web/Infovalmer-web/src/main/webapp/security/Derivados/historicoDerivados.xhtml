@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title>Histórico de derivados</title>
+	<h:outputScript name="utilidades.js" library="js"></h:outputScript>
+	<h:outputStylesheet name="utilidades.css" library="css">
+	</h:outputStylesheet>
+</h:head>
+<h:body>
+	<ui:composition template="/security/plantilla/comun.xhtml">
+		<ui:define name="content">
+			<h:form id="formularioGeneral">
+
+				<p:fieldset legend="Histórico Derivados">
+					<p:messages layout="table" closable="true" autoUpdate="true" />
+					<p:panelGrid columns="2" id="panelConsulta" layout="grid"
+						styleClass="ui-panelgrid-blank">
+						<p:outputLabel for="insumo" value="Insumo"></p:outputLabel>
+						<p:selectOneMenu id="insumo" style="width:90%"
+							value="#{historicoDerivadosController.curvasDto.insumo}"
+							converter="tipoCurvaConverter" filter="true"
+							filterMatchMode="contains">
+							<f:selectItems value="#{historicoDerivadosController.listInsumo}"
+								var="insumo" itemLabel="#{insumo.cNombre}" itemValue="#{insumo}"></f:selectItems>
+						</p:selectOneMenu>
+
+						<p:outputLabel for="fechaIni" value="Fecha Inicial: "></p:outputLabel>
+						<p:calendar id="fechaIni" showOn="button"
+							mindate="#{historicoDerivadosController.minimoFechaInicial}"
+							value="#{historicoDerivadosController.curvasDto.fechaInicial}"
+							pattern="yyyy-MM-dd" navigator="true" locale="es" required="true"
+							requiredMessage="#{msg['FECHA_INICIAL_E1']}">
+							<p:ajax event="dateSelect" update="fechaFin" process="@this"
+								ignoreAutoUpdate="true" />
+						</p:calendar>
+
+						<p:outputLabel for="fechaFin" value="Fecha Final:" />
+						<p:calendar id="fechaFin" showOn="button"
+							value="#{historicoDerivadosController.curvasDto.fechaFinal}"
+							mindate="#{historicoDerivadosController.curvasDto.fechaInicial}"
+							pattern="yyyy-MM-dd" locale="es" navigator="true" required="true"
+							requiredMessage="#{msg['FECHA_FINAL_E2']}" />
+					</p:panelGrid>
+
+					<br />
+					<center>
+						<p:commandButton value="Buscar" id="btnBuscar"
+							actionListener="#{historicoDerivadosController.consultarHistoricoDerivados}"
+							update=":formularioGeneral"></p:commandButton>
+					</center>
+				</p:fieldset>
+
+				<br />
+				<p:fieldset id="fielGrafica"
+					rendered="#{historicoDerivadosController.viewGrafica}">
+					<p:chart type="line"
+						model="#{historicoDerivadosController.graficaDerivados}"
+						responsive="true" widgetVar="graficaHistoricoDerivados" />
+					<br />
+					<br />
+					<p:panelGrid style="width:100%">
+						<p:row>
+							<p:column style="width:50%">
+								<center>
+									<p:commandButton type="button"
+										value="#{msg['RESTABLECER_GRAFICA_NOMBRE']}"
+										icon="ui-icon-cancel"
+										onclick="PF('graficaHistoricoDerivados').resetZoom()" />
+								</center>
+							</p:column>
+							<p:column style="width:50%">
+								<center>
+									<h:commandLink
+										action="#{historicoDerivadosController.generarCsv()}">
+										<h:graphicImage value="/resources/img/descargar.png"
+											title="Descargar archivo CSV" styleClass="tamanoImagen" />
+									</h:commandLink>
+								</center>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+
+				</p:fieldset>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
