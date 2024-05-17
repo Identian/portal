@@ -21,7 +21,7 @@
 		<!-- VERSION JARS LOG -->
 		<slf4j.version>1.7.21</slf4j.version>
 		<logback.version>1.0.7</logback.version>
-		<log4j.version>2.1</log4j.version>
+		<log4j.version>2.23.1</log4j.version>
 
 		<!-- VERSION PRIMEFACES -->
 		<primefaces.version>6.2</primefaces.version>
